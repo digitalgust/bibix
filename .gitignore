@@ -1,0 +1,11 @@
+.idea
+.svn
+
+*.sh
+*.xml
+*.bat
+*.txt
+
+bbserver
+Mysql5.6.20
+srv_res
