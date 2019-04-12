@@ -5,7 +5,7 @@
  */
 package com.egls.client;
 
-import com.egls.client.audio.AudioMgr;
+import com.egls.client.audio.AudioLoader;
 import com.egls.client.chat.Chat;
 import com.egls.client.chat.ChatStateListener;
 import com.egls.client.chat.ImageDatabase;
@@ -770,7 +770,7 @@ public class BbMain implements ChatStateListener {
             if (got != null) {
                 got.addNewMsgCount(1);
                 //
-                AudioMgr.play(AudioMgr.BIBI);
+                AudioLoader.play(AudioLoader.BIBI);
             }
         }
         GForm.flush();

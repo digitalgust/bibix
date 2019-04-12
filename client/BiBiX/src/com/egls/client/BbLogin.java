@@ -5,7 +5,7 @@
  */
 package com.egls.client;
 
-import com.egls.client.audio.AudioMgr;
+import com.egls.client.audio.AudioLoader;
 import java.util.TimerTask;
 import org.mini.gui.*;
 import org.mini.gui.event.*;
@@ -85,7 +85,7 @@ public class BbLogin {
         sig.setIcon(GObject.ICON_LOGIN);
         parent.add(sig);
         sig.setActionListener((GObject gobj) -> {
-            AudioMgr.play(AudioMgr.BIBI);
+            AudioLoader.play(AudioLoader.BIBI);
             String passport = mail.getText();
             String password1 = pwd.getText();
             uilogin(passport, password1, GLanguage.getCurLang());

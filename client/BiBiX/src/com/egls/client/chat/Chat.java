@@ -7,7 +7,7 @@ package com.egls.client.chat;
 
 import com.egls.client.BbApplication;
 import com.egls.client.BbClient;
-import com.egls.client.audio.AudioMgr;
+import com.egls.client.audio.AudioLoader;
 import com.egls.client.chat.bean.ChatGroupInfo;
 import com.egls.client.chat.bean.MemberInfo;
 import com.egls.client.game.Const;

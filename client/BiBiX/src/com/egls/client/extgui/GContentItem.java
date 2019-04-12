@@ -7,7 +7,7 @@ package com.egls.client.extgui;
 
 import com.egls.client.BbMain;
 import com.egls.client.BbStrings;
-import com.egls.client.audio.AudioMgr;
+import com.egls.client.audio.AudioLoader;
 import com.egls.client.chat.MsgItem;
 import org.mini.glfm.Glfm;
 import org.mini.gui.GForm;
@@ -19,6 +19,7 @@ import org.mini.gui.GToolkit;
 import static org.mini.gui.GToolkit.nvgRGBA;
 import org.mini.gui.GViewPort;
 import org.mini.gui.event.GActionListener;
+import org.mini.media.AudioMgr;
 import org.mini.nanovg.Gutil;
 import org.mini.nanovg.Nanovg;
 import static org.mini.nanovg.Nanovg.NVG_ALIGN_LEFT;

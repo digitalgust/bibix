@@ -5,7 +5,7 @@
  */
 package com.egls.client;
 
-import com.egls.client.audio.AudioMgr;
+import com.egls.client.audio.AudioLoader;
 import org.mini.gui.GApplication;
 import org.mini.gui.GForm;
 
@@ -22,7 +22,7 @@ import org.mini.gui.GForm;
 public class BbApplication extends GApplication {
 
     static {
-        AudioMgr.loadAll();
+        AudioLoader.loadAll();
     }
 
     static BbApplication app;
