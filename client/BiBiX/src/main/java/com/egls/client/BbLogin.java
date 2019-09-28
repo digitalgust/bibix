@@ -6,9 +6,11 @@
 package com.egls.client;
 
 import com.egls.client.audio.AudioLoader;
-import java.util.TimerTask;
+import org.mini.apploader.AppManager;
 import org.mini.gui.*;
-import org.mini.gui.event.*;
+import org.mini.gui.event.GActionListener;
+
+import java.util.TimerTask;
 
 /**
  *
@@ -35,6 +37,12 @@ public class BbLogin {
         logoItem.setSize(logoImg.getWidth(), logoImg.getHeight());
         logoItem.setDrawBoader(false);
         form.add(logoItem);
+
+        GButton exitBtn = new GButton(BbStrings.getString("Exit"), 5, 5, 40, 28);
+        exitBtn.setActionListener((GObject gobj) -> {
+            AppManager.getInstance().active();
+        });
+        form.add(exitBtn);
 
         GFrame gframe = new GFrame(BbStrings.getString("BiBi"), 50, 50, 300, 240);
         init(gframe.getView(), vg);

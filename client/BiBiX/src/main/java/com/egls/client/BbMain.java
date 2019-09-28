@@ -6,20 +6,18 @@
 package com.egls.client;
 
 import com.egls.client.audio.AudioLoader;
-import com.egls.client.chat.Chat;
-import com.egls.client.chat.ChatStateListener;
-import com.egls.client.chat.ImageDatabase;
-import com.egls.client.chat.MsgDatabase;
-import com.egls.client.chat.MsgItem;
-import com.egls.client.chat.MsgPage;
+import com.egls.client.chat.*;
 import com.egls.client.chat.bean.ChatGroupInfo;
 import com.egls.client.chat.bean.MemberInfo;
-import com.egls.client.extgui.GAudioRecoder;
-import com.egls.client.extgui.GContentItem;
-import com.egls.client.extgui.GContentView;
-import com.egls.client.extgui.GSessionItem;
-import com.egls.client.extgui.GSessionList;
+import com.egls.client.extgui.*;
 import com.egls.client.netmgr.CmdPkg;
+import org.mini.apploader.AppManager;
+import org.mini.glfm.Glfm;
+import org.mini.gui.*;
+import org.mini.gui.event.GActionListener;
+import org.mini.gui.event.GFocusChangeListener;
+import org.mini.gui.event.GStateChangeListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,18 +25,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.mini.apploader.AppManager;
-import org.mini.glfm.Glfm;
-import org.mini.gui.*;
-import static org.mini.gui.GObject.HEIGHT;
-import static org.mini.gui.GObject.LEFT;
-import static org.mini.gui.GObject.TOP;
-import static org.mini.gui.GObject.WIDTH;
-import org.mini.guijni.GuiCallBack;
-import org.mini.gui.event.GActionListener;
-import org.mini.gui.event.GFocusChangeListener;
-import org.mini.gui.event.GStateChangeListener;
-import org.mini.nanovg.Nanovg;
+
+import static org.mini.gui.GObject.*;
 
 /**
  *
@@ -517,7 +505,7 @@ public class BbMain implements ChatStateListener {
     void chatPanelShowLeft() {
         float panelX = chatPanel.getX();
         float panelY = chatPanel.getY();
-        form.inertiaEvent(panelX, panelY, panelX + 200, panelY, 100);
+        form.inertiaEvent(panelX, panelY, panelX + 200, panelY, 50);
         GSessionItem gsi = curSelectedItem;
         if (gsi != null) {
             gsi.clearMsgNewCount();
@@ -529,7 +517,7 @@ public class BbMain implements ChatStateListener {
     void chatPanelShowRight() {
         float panelX = chatPanel.getX();
         float panelY = chatPanel.getY();
-        form.inertiaEvent(panelX + 200, panelY, panelX, panelY, 100);
+        form.inertiaEvent(panelX + 200, panelY, panelX, panelY, 50);
     }
 
     void showAddNewFrame() {
