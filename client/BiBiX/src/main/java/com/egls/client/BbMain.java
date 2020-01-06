@@ -29,7 +29,6 @@ import java.util.Map;
 import static org.mini.gui.GObject.*;
 
 /**
- *
  * @author Gust
  */
 public class BbMain implements ChatStateListener {
@@ -52,7 +51,10 @@ public class BbMain implements ChatStateListener {
     GForm form;
     GMenu menu;
 
+    GViewSlot chatSlots;
+
     GPanel chatPanel;
+    GPanel sessionPanel;
     GViewPort gameView;
     GViewPort myView;
     GImage logoImg;
@@ -74,31 +76,34 @@ public class BbMain implements ChatStateListener {
     static float menuH = 60, pad = 2, inputH = 60, addW = 60, addH = 28, sendW = 60;
     ;
     static float[][] align = {
-        {0, -1, -1, menuH}, //menu
-        //
-        {-1, pad, addW, addH}, //addBtn
-        {pad, 37, -1, 30}, //search
-        {0, 72, -1, -1}, //sessionList
-        //
-        {-1, pad, addW, addH}, //moreBtn
-        {-1, 37, -1, -1}, //contentView
-        {-1, -1, -1, inputH}, //msgBox
-        {-1, -1, sendW, inputH}, //sendBtn
+            {0, -1, -1, menuH}, //menu
+            //
+            {-1, pad, addW, addH}, //addBtn
+            {pad, 37, -1, 30}, //search
+            {0, 72, -1, -1}, //sessionList
+            //
+            {-1, pad, addW, addH}, //moreBtn
+            {-1, 37, -1, -1}, //contentView
+            {-1, -1, -1, inputH}, //msgBox
+            {-1, -1, sendW, inputH}, //sendBtn
 
-        //
-        {0, 0, -1, -1}, //chatPan
-        {0, 0, -1, -1}, //myPan
-        {0, 0, -1, -1}, //mapPan
-        //
-        {-1, pad, addW, addH}, //back2listBtn
-        {-1, 37, 200, 160}, //moreMenu
-        {-1, 40, -1, -1}, //addMember
-        {-1, 37, -1, -1}, //addMemberList
-        {-1, -1, 80, 30}, //addMemberOk
+            //
+            {0, 0, -1, -1}, //chatPan
+            {0, 0, -1, -1}, //myPan
+            {0, 0, -1, -1}, //mapPan
+            //
+            {-1, pad, addW, addH}, //back2listBtn
+            {-1, 37, 200, 160}, //moreMenu
+            {-1, 40, -1, -1}, //addMember
+            {-1, 37, -1, -1}, //addMemberList
+            {-1, -1, 80, 30}, //addMemberOk
 
-        //
-        {-1, -1, sendW, inputH}, //mediaBtn
-        {-1, pad, -1, addH}, //nameLab
+            //
+            {-1, -1, sendW, inputH}, //mediaBtn
+            {-1, pad, -1, addH}, //nameLab
+
+            //
+            {0, 0, -1, -1}, //slots
     };
 
     static int ATT_MENU = 0;
@@ -119,6 +124,7 @@ public class BbMain implements ChatStateListener {
     static int ATT_ADDMEMBEROK = 15;
     static int ATT_MEDIABTN = 16;
     static int ATT_NAMELAB = 17;
+    static int ATT_SLOTS = 18;
 
     void reAlign(float devW, float devH) {
         align[ATT_MENU][TOP] = devH - menuH;
@@ -131,25 +137,25 @@ public class BbMain implements ChatStateListener {
         align[ATT_SESSIONLIST][WIDTH] = devW;
         align[ATT_SESSIONLIST][HEIGHT] = devH - menuH - pad - align[ATT_SESSIONLIST][TOP];
 
-        align[ATT_MOREBTN][LEFT] = devW * 2 - addW - pad;
+        align[ATT_MOREBTN][LEFT] = devW - addW - pad;
 
-        align[ATT_NAMELAB][LEFT] = devW + addW + pad;
+        align[ATT_NAMELAB][LEFT] = addW + pad;
         align[ATT_NAMELAB][WIDTH] = devW - addW * 2 - pad * 4;
 
-        align[ATT_BACK2LISTBTN][LEFT] = devW + pad;
+        align[ATT_BACK2LISTBTN][LEFT] = pad;
 
-        align[ATT_CONTVIEW][LEFT] = devW;
+        align[ATT_CONTVIEW][LEFT] = 0;
         align[ATT_CONTVIEW][WIDTH] = devW;
         align[ATT_CONTVIEW][HEIGHT] = devH - menuH - align[ATT_CONTVIEW][TOP] - inputH - pad * 2;
 
-        align[ATT_MSGBOX][LEFT] = devW + pad + sendW + pad;
+        align[ATT_MSGBOX][LEFT] = pad + sendW + pad;
         align[ATT_MSGBOX][TOP] = devH - menuH - pad - inputH;
         align[ATT_MSGBOX][WIDTH] = devW - pad * 4 - sendW * 2;
 
-        align[ATT_SENDBTN][LEFT] = devW * 2 - pad - sendW;
+        align[ATT_SENDBTN][LEFT] = devW - pad - sendW;
         align[ATT_SENDBTN][TOP] = align[ATT_MSGBOX][TOP];
 
-        align[ATT_CHATPAN][WIDTH] = devW * 2;
+        align[ATT_CHATPAN][WIDTH] = devW;
         align[ATT_CHATPAN][HEIGHT] = devH - menuH;
 
         align[ATT_MYVIEW][WIDTH] = devW;
@@ -158,11 +164,11 @@ public class BbMain implements ChatStateListener {
         align[ATT_GAMEVIEW][WIDTH] = devW;
         align[ATT_GAMEVIEW][HEIGHT] = devH - menuH - pad;
 
-        align[ATT_MOREMENU][LEFT] = devW * 2 - align[ATT_MOREMENU][WIDTH] - pad;
+        align[ATT_MOREMENU][LEFT] = devW - align[ATT_MOREMENU][WIDTH] - pad;
 
         align[ATT_ADDMEMBER][WIDTH] = devW - 80;
         align[ATT_ADDMEMBER][HEIGHT] = align[ATT_CHATPAN][HEIGHT] - 80;
-        align[ATT_ADDMEMBER][LEFT] = devW + 40;
+        align[ATT_ADDMEMBER][LEFT] = 40;
 
         align[ATT_ADDMEMBERLIST][WIDTH] = align[ATT_ADDMEMBER][WIDTH] - 4;
         align[ATT_ADDMEMBERLIST][HEIGHT] = align[ATT_ADDMEMBER][HEIGHT] - 71 - 30 - pad * 2;
@@ -171,8 +177,11 @@ public class BbMain implements ChatStateListener {
         align[ATT_ADDMEMBEROK][LEFT] = (align[ATT_ADDMEMBER][WIDTH] - align[ATT_ADDMEMBEROK][WIDTH]) / 2;
         align[ATT_ADDMEMBEROK][TOP] = align[ATT_ADDMEMBERLIST][TOP] + align[ATT_ADDMEMBERLIST][HEIGHT] + pad;
 
-        align[ATT_MEDIABTN][LEFT] = devW + pad;
+        align[ATT_MEDIABTN][LEFT] = pad;
         align[ATT_MEDIABTN][TOP] = align[ATT_SENDBTN][TOP];
+
+        align[ATT_SLOTS][WIDTH] = devW;
+        align[ATT_SLOTS][HEIGHT] = devH - menuH;
     }
 
     void reBoundle() {
@@ -208,6 +217,9 @@ public class BbMain implements ChatStateListener {
         }
         if (gameView != null) {
             gameView.setSize(align[ATT_GAMEVIEW][WIDTH], align[ATT_GAMEVIEW][HEIGHT]);
+        }
+        if (chatSlots != null) {
+            chatSlots.setSize(align[ATT_SLOTS][WIDTH], align[ATT_SLOTS][HEIGHT]);
         }
 
     }
@@ -247,7 +259,7 @@ public class BbMain implements ChatStateListener {
         createMainMenu();
         getCanvasPanel();
         getMyPanel();
-        setCurrent(getChatPanel());
+        setCurrent(getChatSlots());
 
         menu.setFixed(true);
         form.add(menu);
@@ -313,8 +325,8 @@ public class BbMain implements ChatStateListener {
     }
 
     void setCurrent(GContainer cur) {
+        form.remove(chatSlots);
         form.remove(gameView);
-        form.remove(chatPanel);
         form.remove(myView);
         form.add(cur);
         form.reBoundle();
@@ -326,14 +338,14 @@ public class BbMain implements ChatStateListener {
         GMenuItem item;
         item = menu.addItem(null, img);//BbStrings.getString("Session")
         item.setActionListener((GObject gobj) -> {
-            setCurrent(chatPanel);
+            setCurrent(getChatSlots());
             form.setScrollX(0.f);
         });
         img = GImage.createImageFromJar("/res/img/map.png");
         item = menu.addItem(null, img);//BbStrings.getString("Map")
         item.setActionListener((GObject gobj) -> {
             GForm.addMessage(BbStrings.getString("It's in building, energy wasted"));
-            setCurrent(gameView);
+            setCurrent(getCanvasPanel());
         });
         img = GImage.createImageFromJar("/res/img/my.png");
         item = menu.addItem(null, img);//BbStrings.getString("My")
@@ -342,6 +354,22 @@ public class BbMain implements ChatStateListener {
             setCurrent(getMyPanel());
         });
         //item = menu.addItem("搜索", img);
+    }
+
+    public GContainer getChatSlots() {
+        if (chatSlots == null) {
+            chatSlots = new GViewSlot(align[ATT_SLOTS][WIDTH], align[ATT_SLOTS][HEIGHT], GViewSlot.SCROLL_MODE_HORIZONTAL);
+            chatSlots.setLocation(align[ATT_SLOTS][LEFT], align[ATT_SLOTS][TOP]);
+            chatSlots.setSize(align[ATT_SLOTS][WIDTH], align[ATT_SLOTS][HEIGHT]);
+
+            createMainMenu();
+            getCanvasPanel();
+            getMyPanel();
+            chatSlots.add(0, getSessionPanel(), GViewSlot.MOVE_FIXED);
+            chatSlots.add(1, getChatPanel(), GViewSlot.MOVE_LEFT);
+            chatSlots.reBoundle();
+        }
+        return chatSlots;
     }
 
     public GContainer getCanvasPanel() {
@@ -356,19 +384,17 @@ public class BbMain implements ChatStateListener {
         return gameView;
     }
 
-    GPanel getChatPanel() {
-        if (chatPanel == null) {
+    GPanel getSessionPanel() {
+        if (sessionPanel == null) {
 
-            chatPanel = new GPanel();
-            chatPanel.setLocation(align[ATT_CHATPAN][LEFT], align[ATT_CHATPAN][TOP]);
-            chatPanel.setSize(align[ATT_CHATPAN][WIDTH], align[ATT_CHATPAN][HEIGHT]);
-            form.add(chatPanel);
+            sessionPanel = new GPanel();
+            sessionPanel.setLocation(align[ATT_CHATPAN][LEFT], align[ATT_CHATPAN][TOP]);
+            sessionPanel.setSize(align[ATT_CHATPAN][WIDTH], align[ATT_CHATPAN][HEIGHT]);
 
-            //chatPanel.add(menu);
             //left
             GButton addbtn = new GButton(BbStrings.getString("+ Add"), align[ATT_ADDBTN][LEFT], align[ATT_ADDBTN][TOP], align[ATT_ADDBTN][WIDTH], align[ATT_ADDBTN][HEIGHT]);
             //addbtn.setBgColor(0, 96, 128, 255);
-            chatPanel.add(addbtn);
+            sessionPanel.add(addbtn);
             addbtn.setActionListener((GObject gobj) -> {
                 showAddNewFrame();
             });
@@ -384,12 +410,25 @@ public class BbMain implements ChatStateListener {
                     }
                 }
             });
-            chatPanel.add(search);
+            sessionPanel.add(search);
 
             sessionList = new GSessionList(align[ATT_SESSIONLIST][LEFT], align[ATT_SESSIONLIST][TOP], align[ATT_SESSIONLIST][WIDTH], align[ATT_SESSIONLIST][HEIGHT]);
             sessionList.setShowMode(GList.MODE_MULTI_SHOW);
             sessionList.setItemHeight(50);
-            chatPanel.add(sessionList);
+            sessionPanel.add(sessionList);
+
+
+        }
+        return sessionPanel;
+    }
+
+    GPanel getChatPanel() {
+        if (chatPanel == null) {
+
+            chatPanel = new GPanel();
+            chatPanel.setLocation(align[ATT_CHATPAN][LEFT], align[ATT_CHATPAN][TOP]);
+            chatPanel.setSize(align[ATT_CHATPAN][WIDTH], align[ATT_CHATPAN][HEIGHT]);
+
 
             //right
             GButton moreBtn = new GButton("...", align[ATT_MOREBTN][LEFT], align[ATT_MOREBTN][TOP], align[ATT_MOREBTN][WIDTH], align[ATT_MOREBTN][HEIGHT]);
@@ -419,38 +458,38 @@ public class BbMain implements ChatStateListener {
             chatPanel.add(mediaBtn);
             mediaBtn.setActionListener((GObject gobj) -> {
                 GList mediaMenu = GToolkit.getListMenu(new String[]{
-                    BbStrings.getString("Send Photo"),
-                    BbStrings.getString("Camera"),
-                    BbStrings.getString("Voice"),//
-                    BbStrings.getString("VoiceNow"),//
-                },
+                                BbStrings.getString("Send Photo"),
+                                BbStrings.getString("Camera"),
+                                BbStrings.getString("Voice"),//
+                                BbStrings.getString("VoiceNow"),//
+                        },
                         null,
                         new GActionListener[]{
-                            //photo
-                            new GActionListener() {
-                        @Override
-                        public void action(GObject gobj) {
-                            Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_PHOTO, 0);
-                        }
-                    },//camera
-                            new GActionListener() {
-                        @Override
-                        public void action(GObject gobj) {
-                            Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_CAMERA, 0);
-                        }
-                    },//voice
-                            new GActionListener() {
-                        @Override
-                        public void action(GObject gobj) {
-                            showAudioCaptureFrame();
-                        }
-                    },//voiceNow
-                            new GActionListener() {
-                        @Override
-                        public void action(GObject gobj) {
-                            GForm.addMessage(BbStrings.getString("Not available"));
-                        }
-                    },});
+                                //photo
+                                new GActionListener() {
+                                    @Override
+                                    public void action(GObject gobj) {
+                                        Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_PHOTO, 0);
+                                    }
+                                },//camera
+                                new GActionListener() {
+                                    @Override
+                                    public void action(GObject gobj) {
+                                        Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_CAMERA, 0);
+                                    }
+                                },//voice
+                                new GActionListener() {
+                                    @Override
+                                    public void action(GObject gobj) {
+                                        showAudioCaptureFrame();
+                                    }
+                                },//voiceNow
+                                new GActionListener() {
+                                    @Override
+                                    public void action(GObject gobj) {
+                                        GForm.addMessage(BbStrings.getString("Not available"));
+                                    }
+                                },});
                 mediaMenu.setSize(mediaMenu.getW(), 160);
                 mediaMenu.setInnerSize(mediaMenu.getW(), 160);
                 mediaMenu.setLocation(mediaBtn.getLocationLeft(), mediaBtn.getLocationTop() - mediaMenu.getH() - pad);
@@ -503,21 +542,19 @@ public class BbMain implements ChatStateListener {
     }
 
     void chatPanelShowLeft() {
-        float panelX = chatPanel.getX();
-        float panelY = chatPanel.getY();
-        form.inertiaEvent(panelX, panelY, panelX + 200, panelY, 50);
         GSessionItem gsi = curSelectedItem;
         if (gsi != null) {
             gsi.clearMsgNewCount();
             sessionList.setSelectedIndex(-1);
             curSelectedItem = null;
         }
+        chatSlots.moveTo(0, 200);
+        System.out.println("show left");
     }
 
     void chatPanelShowRight() {
-        float panelX = chatPanel.getX();
-        float panelY = chatPanel.getY();
-        form.inertiaEvent(panelX + 200, panelY, panelX, panelY, 50);
+        chatSlots.moveTo(1, 200);
+        System.out.println("show right");
     }
 
     void showAddNewFrame() {
