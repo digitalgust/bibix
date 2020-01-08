@@ -26,7 +26,7 @@ public class Log {
      * @param s 消息内容
      */
     public static void debug(String s) {
-        if (level >= DEBUG) {
+        if (logfile != null && level >= DEBUG) {
             logfile.info("|" + LOG_NAME[DEBUG] + "|" + s);
         }
     }
@@ -37,7 +37,7 @@ public class Log {
      * @param s 消息内容
      */
     public static void info(String s) {
-        if (level >= INFO) {
+        if (logfile != null && level >= INFO) {
             logfile.info("|" + LOG_NAME[INFO] + "|" + s);
         }
     }
@@ -48,7 +48,7 @@ public class Log {
      * @param s 消息内容
      */
     public static void warning(String s) {
-        if (level >= WARNING) {
+        if (logfile != null && level >= WARNING) {
             logfile.info("|" + LOG_NAME[WARNING] + "|" + s);
         }
     }
@@ -59,7 +59,7 @@ public class Log {
      * @param s 消息内容
      */
     public static void error(String s) {
-        if (level >= ERROR) {
+        if (logfile != null && level >= ERROR) {
             logfile.error("|" + LOG_NAME[ERROR] + "|" + s, null);
         }
     }
@@ -67,11 +67,11 @@ public class Log {
     /**
      * error 消息
      *
-     * @param s 消息内容
+     * @param s  消息内容
      * @param ex Exception
      */
     public static void error(String s, Exception ex) {
-        if (level >= ERROR) {
+        if (logfile != null && level >= ERROR) {
             logfile.error("|" + LOG_NAME[ERROR] + "|" + s, ex);
         }
     }

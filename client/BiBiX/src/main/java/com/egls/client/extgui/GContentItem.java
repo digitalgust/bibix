@@ -7,35 +7,18 @@ package com.egls.client.extgui;
 
 import com.egls.client.BbMain;
 import com.egls.client.BbStrings;
-import com.egls.client.audio.AudioLoader;
 import com.egls.client.chat.MsgItem;
 import org.mini.glfm.Glfm;
-import org.mini.gui.GForm;
-import org.mini.gui.GGraphics;
-import org.mini.gui.GImage;
-import org.mini.gui.GList;
-import org.mini.gui.GObject;
-import org.mini.gui.GToolkit;
-import static org.mini.gui.GToolkit.nvgRGBA;
-import org.mini.gui.GViewPort;
+import org.mini.gui.*;
 import org.mini.gui.event.GActionListener;
 import org.mini.media.AudioMgr;
 import org.mini.nanovg.Gutil;
 import org.mini.nanovg.Nanovg;
-import static org.mini.nanovg.Nanovg.NVG_ALIGN_LEFT;
-import static org.mini.nanovg.Nanovg.NVG_ALIGN_TOP;
-import static org.mini.nanovg.Nanovg.nvgBeginPath;
-import static org.mini.nanovg.Nanovg.nvgFill;
-import static org.mini.nanovg.Nanovg.nvgFillColor;
-import static org.mini.nanovg.Nanovg.nvgFillPaint;
-import static org.mini.nanovg.Nanovg.nvgFontFace;
-import static org.mini.nanovg.Nanovg.nvgFontSize;
-import static org.mini.nanovg.Nanovg.nvgLinearGradient;
-import static org.mini.nanovg.Nanovg.nvgRoundedRect;
-import static org.mini.nanovg.Nanovg.nvgTextAlign;
+
+import static org.mini.gui.GToolkit.nvgRGBA;
+import static org.mini.nanovg.Nanovg.*;
 
 /**
- *
  * @author Gust
  */
 public class GContentItem extends GObject {
@@ -132,32 +115,43 @@ public class GContentItem extends GObject {
         touched = false;
         GList menu = GToolkit.getListMenu(
                 new String[]{
-                    BbStrings.getString("Copy"),
-                    BbStrings.getString("Forward") + "...",
-                    BbStrings.getString("More"),},//
+                        BbStrings.getString("Copy"),
+                        BbStrings.getString("Forward") + "...",
+                        BbStrings.getString("More"),},//
                 null, //
                 new GActionListener[]{
-                    new GActionListener() {
-                @Override
-                public void action(GObject gobj) {
-                    if (!msg.isMediaMsg()) {
-                        Glfm.glfmSetClipBoardContent(msg.msg);
+                        new GActionListener() {
+                            @Override
+                            public void action(GObject gobj) {
+                                if (!msg.isMediaMsg()) {
+                                    Glfm.glfmSetClipBoardContent(msg.msg);
+                                }
+                                form.setFocus(null);
+                            }
+                        }, new GActionListener() {
+                    @Override
+                    public void action(GObject gobj) {
+                        app.showForwardFrame(GContentItem.this);
+                        form.setFocus(null);
                     }
-                }
-            }, new GActionListener() {
-                @Override
-                public void action(GObject gobj) {
-                    app.showForwardFrame(GContentItem.this);
-                }
-            }, new GActionListener() {
-                @Override
-                public void action(GObject gobj) {
-                }
-            },});
-        menu.setLocation(form.getDeviceWidth() * 1.5f - menu.getW() * .5f, getY());
+                }, new GActionListener() {
+                    @Override
+                    public void action(GObject gobj) {
+                        form.setFocus(null);
+                    }
+                },});
+        float mx = x;
+        float my = y;
+        if (mx + menu.getW() > form.getDeviceWidth()) {
+            mx = form.getDeviceWidth() - menu.getW();
+        }
+        if (my + menu.getH() > form.getDeviceHeight()) {
+            my = form.getDeviceHeight() - menu.getH();
+        }
+        menu.setLocation(mx, my);
         form.add(menu);
 
-        form.setFocus(menu);
+        //form.setFocus(menu);
 
     }
 

@@ -5,9 +5,7 @@
  */
 package com.egls.client.extgui;
 
-import com.egls.client.BbClient;
 import com.egls.client.BbMain;
-import java.util.Iterator;
 import org.mini.gui.GObject;
 import org.mini.gui.GViewPort;
 
