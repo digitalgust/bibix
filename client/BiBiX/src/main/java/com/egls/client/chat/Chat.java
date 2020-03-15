@@ -7,25 +7,16 @@ package com.egls.client.chat;
 
 import com.egls.client.BbApplication;
 import com.egls.client.BbClient;
-import com.egls.client.audio.AudioLoader;
 import com.egls.client.chat.bean.ChatGroupInfo;
 import com.egls.client.chat.bean.MemberInfo;
 import com.egls.client.game.Const;
 import com.egls.client.netmgr.CmdPkg;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.mini.crypt.XorCrypt;
-import org.mini.glfm.Glfm;
+
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
- *
  * @author Gust
  */
 public class Chat {
@@ -53,7 +44,7 @@ public class Chat {
         msgdb = new MsgDatabase(BbApplication.getInstance().getSaveRoot(), bbClient.getRoleid());
         imagedb = new ImageDatabase(BbApplication.getInstance().getSaveRoot(), "");
 
-       
+
     }
 
     public Map<Long, ChatGroupInfo> getSessions() {
@@ -473,21 +464,14 @@ public class Chat {
         sendSpeak(mi);
     }
 
-    public void sendImgMsg(long toid, long groupid, byte[] image) {
-        MsgItem mi = new MsgItem(MsgItem.TYPE_IMAGE, image);
+    public void sendFileMsg(long toid, long groupid, String fileName, byte[] image) {
+        MsgItem mi = new MsgItem(fileName, image);
         mi.fromid = bbClient.getRoleid();
         mi.toid = toid;
         mi.groupid = groupid;
         sendSpeak(mi);
     }
 
-    public void sendVoiceMsg(long toid, long groupid, byte[] voice) {
-        MsgItem mi = new MsgItem(MsgItem.TYPE_VOICE, voice);
-        mi.fromid = bbClient.getRoleid();
-        mi.toid = toid;
-        mi.groupid = groupid;
-        sendSpeak(mi);
-    }
 
     public void sendSpeak(MsgItem mi) {
         //msg too long
@@ -634,7 +618,7 @@ public class Chat {
         listener.onFriendUpdated(mi);
     }
 
-//    public void sendReconnect() {
+    //    public void sendReconnect() {
 //        CmdPkg cmd = new CmdPkg(Const.C_CHATSESSION_RECONNECT);
 //        cmd.writeLong(bbClient.getRoleid());
 //        bbClient.send(cmd);

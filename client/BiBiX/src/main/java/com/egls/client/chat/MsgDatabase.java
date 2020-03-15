@@ -6,6 +6,7 @@
 package com.egls.client.chat;
 
 import com.egls.client.game.Const;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Gust
  */
 public class MsgDatabase extends Thread {
@@ -180,7 +180,6 @@ public class MsgDatabase extends Thread {
      *
      * @param friendid
      * @param sessionid
-     * @param time
      * @return
      */
     public MsgPage getPrePage(long friendid, long sessionid, int pageId) {
@@ -390,6 +389,10 @@ public class MsgDatabase extends Thread {
             cache.put(i, mp);
         }
         saveMetaFile();
+    }
+
+    public String getMediaFilePath(String id) {
+        return getMediaFolderName() + id;
     }
 
     void putMedia(String id, byte[] data) {

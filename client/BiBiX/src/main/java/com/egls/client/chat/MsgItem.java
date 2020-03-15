@@ -10,23 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author gust
  */
 public class MsgItem {
 
-    public static final int TYPE_UNKNOW = 0;
+    public static final int TYPE_TEXT = 0;
     public static final int TYPE_IMAGE = 1;
+    public static final String STRING_IMAGE = ".jpeg";
     public static final int TYPE_VOICE = 2;
+    public static final String STRING_VOICE = ".wav";
+    public static final int TYPE_VIDEO = 3;
+    public static final String STRING_VIDEO = ".mp4";
+    public static final int TYPE_FILE = 4;
 
-    static final String MEDIA_SCHEMA = "MEDIA://";//
-    static final String MEDIA_SCHEMA_IMAGE = "MEDIA://IMAGE@";//example:      MEDIA://IMAGE@8E29384092A73B321.jpeg 
-    static final String MEDIA_SCHEMA_VOICE = "MEDIA://VOICE@";//example:      MEDIA://VOICE@8E29384092A73B321.wav 
+    static final String MEDIA_SCHEMA = "MEDIA://";//   CONTENTFILE://aa.wav
 
 
     static final char fieldSplitor = '|';
     static final char lineSplitor = '\n';
-    
+
     //
     public long time;
     public long fromid;
@@ -40,17 +42,8 @@ public class MsgItem {
 
     }
 
-    public MsgItem(int type, byte[] data) {
-        switch (type) {
-            case TYPE_IMAGE: {
-                msg = MEDIA_SCHEMA_IMAGE;
-                break;
-            }
-            case TYPE_VOICE: {
-                msg = MEDIA_SCHEMA_VOICE;
-                break;
-            }
-        }
+    public MsgItem(String extName, byte[] data) {
+        msg = MEDIA_SCHEMA + extName + "@";
         thumb = data;
     }
 
@@ -59,13 +52,18 @@ public class MsgItem {
     }
 
     public int getMediaType() {
-        if (msg.startsWith(MEDIA_SCHEMA_IMAGE)) {
-            return TYPE_IMAGE;
-        } else if (msg.startsWith(MEDIA_SCHEMA_VOICE)) {
-            return TYPE_VOICE;
+        if (msg.startsWith(MEDIA_SCHEMA)) {
+            if (msg.startsWith(MEDIA_SCHEMA + STRING_IMAGE)) {
+                return TYPE_IMAGE;
+            } else if (msg.startsWith(MEDIA_SCHEMA + STRING_VOICE)) {
+                return TYPE_VOICE;
+            } else if (msg.startsWith(MEDIA_SCHEMA + STRING_VIDEO)) {
+                return TYPE_VIDEO;
+            } else {
+                return TYPE_FILE;
+            }
         }
-
-        return TYPE_UNKNOW;
+        return TYPE_TEXT;
     }
 
     public String getMediaId() {
@@ -107,7 +105,8 @@ public class MsgItem {
     }
 
     public void loadMedia(MsgDatabase base) {
-        if (isMediaMsg()) {
+        int msgType = getMediaType();
+        if (msgType == TYPE_IMAGE || msgType == TYPE_VOICE) {
             thumb = base.getMedia(getMediaId());
         }
     }

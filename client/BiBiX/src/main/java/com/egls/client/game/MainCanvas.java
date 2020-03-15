@@ -2,13 +2,13 @@ package com.egls.client.game;
 
 import com.egls.client.BbClient;
 import com.egls.client.util.Util;
-import java.awt.Image;
 import org.mini.glfm.Glfm;
 import org.mini.gui.GCanvas;
 import org.mini.gui.GGraphics;
 
+import java.awt.*;
+
 /**
- *
  * 游戏画面
  */
 public final class MainCanvas
@@ -37,9 +37,9 @@ public final class MainCanvas
 //--------------------------------------------------------------------------------------
 //                                           方法
 //--------------------------------------------------------------------------------------
+
     /**
      * 构造方法
-     *
      */
     public MainCanvas(BbClient bb, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -115,6 +115,7 @@ public final class MainCanvas
     //;----------------------------------------------------------------------------
     //;                                   需要实现的方法
     //;----------------------------------------------------------------------------
+
     /**
      * 新开始一个游戏
      */
@@ -138,11 +139,12 @@ public final class MainCanvas
     //;----------------------------------------------------------------------
     //;                                  延时系统
     //;----------------------------------------------------------------------
+
     /**
      * 实现延时
      *
      * @param waitFor int 等多长时间
-     * @param type byte 等待类型
+     * @param type    byte 等待类型
      * @return boolean 是否超时
      */
     private boolean isDelayed(int waitFor, byte type) {
@@ -169,7 +171,7 @@ public final class MainCanvas
     }
 
     @Override
-    public void touchEvent(int phase, int x, int y) {
+    public void touchEvent(int touchid, int phase, int x, int y) {
         if (isInArea(x, y)) {
             if (phase == Glfm.GLFMTouchPhaseBegan) {
 
@@ -178,7 +180,7 @@ public final class MainCanvas
                 bbClient.getGameRun().pointerReleased(x - (int) getX(), y - (int) getY());
             }
         }
-        super.touchEvent(phase, x, y);
+        super.touchEvent(touchid, phase, x, y);
     }
 
 }

@@ -78,7 +78,7 @@ public class GContentView extends GViewPort {
             add(in);
         }
 
-        reBoundle();
+        reSize();
         setScrollY((in.getLocationTop() + in.getH()) / getInnerH());
     }
     //
@@ -143,7 +143,7 @@ public class GContentView extends GViewPort {
         } else if ((scrollY == 1 || (getH() - getInnerH() == 0)) && dy < 0) {
             app.loadNextPage();
         }
-        reBoundle();
+        reSize();
         flush();
         return super.dragEvent(dx, dy, x, y);
     }

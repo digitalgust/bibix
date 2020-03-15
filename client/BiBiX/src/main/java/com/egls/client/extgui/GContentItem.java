@@ -29,10 +29,12 @@ public class GContentItem extends GObject {
     public static float defaultImageH = 120;
     public static float defaultVoiceW = 46;
     public static float defaultVoiceH = 46;
+    public static float defaultVideoW = 200;
+    public static float defaultVideoH = 135;
     public static float defaultVoiceIconWH = 40;
     public static float pad = 5;
 
-    public static GImage voiceIcon;
+    public static GImage voiceIcon, videoIcon;
 
     BbMain app;
     MsgItem msg;
@@ -61,6 +63,10 @@ public class GContentItem extends GObject {
             case MsgItem.TYPE_IMAGE:
                 contW = defaultImageW;
                 contH = defaultImageH;
+                break;
+            case MsgItem.TYPE_VIDEO:
+                contW = defaultVideoW;
+                contH = defaultVideoH;
                 break;
             case MsgItem.TYPE_VOICE:
                 voiceTimeSec = (int) AudioMgr.getZipDataTime(msg.thumb);
@@ -166,7 +172,7 @@ public class GContentItem extends GObject {
     float mouseX, mouseY;
 
     @Override
-    public void touchEvent(int phase, int x, int y) {
+    public void touchEvent(int touchid, int phase, int x, int y) {
         if (isInArea(x, y)) {
             switch (phase) {
                 case Glfm.GLFMTouchPhaseEnded:
@@ -185,13 +191,17 @@ public class GContentItem extends GObject {
                                     break;
                                 }
                                 case MsgItem.TYPE_VOICE: {
-                                    //AudioMgr.playData(Zip.extract0(msg.thumb));
                                     GAudioRecoder recoder = new GAudioRecoder(form, true);
                                     recoder.setAudioZipData(msg.thumb);
                                     form.add(recoder);
                                     form.setFocus(recoder);
                                     recoder.align(GGraphics.HCENTER | GGraphics.VCENTER);
                                     recoder.startPlay();
+                                    break;
+                                }
+                                case MsgItem.TYPE_VIDEO: {
+                                    String path = app.getMsgDatabase().getMediaFilePath(msg.getMediaId());
+                                    long handle = Glfm.glfmPlayVideo(form.getWinContext(), path, "video/mp4");
                                     break;
                                 }
                             }
@@ -241,6 +251,9 @@ public class GContentItem extends GObject {
                 case MsgItem.TYPE_IMAGE:
                     GToolkit.drawImage(vg, img, dx + pad, dy + pad, contW, h - pad * 2);
                     break;
+                case MsgItem.TYPE_VIDEO:
+                    GToolkit.drawImage(vg, getVedioImg(vg), dx + pad, dy + pad, contW, h - pad * 2);
+                    break;
                 case MsgItem.TYPE_VOICE:
                     drawVoiceBar(vg, dx, dy, contW, h - pad * 2, leftColor);
                     GToolkit.drawImage(vg, getVoiceImg(vg), dx + pad, dy + pad * .5f, defaultVoiceIconWH, defaultVoiceIconWH, false, .5f);
@@ -262,6 +275,9 @@ public class GContentItem extends GObject {
             switch (msg.getMediaType()) {
                 case MsgItem.TYPE_IMAGE:
                     GToolkit.drawImage(vg, img, dx + pad, dy + pad, contW, h - pad * 2);
+                    break;
+                case MsgItem.TYPE_VIDEO:
+                    GToolkit.drawImage(vg, getVedioImg(vg), dx + pad, dy + pad, contW, h - pad * 2);
                     break;
                 case MsgItem.TYPE_VOICE:
                     drawVoiceBar(vg, dx, dy, contW, h - pad * 2, rightColor);
@@ -294,5 +310,12 @@ public class GContentItem extends GObject {
             voiceIcon = GImage.createImageFromJar("/res/img/play.png");
         }
         return voiceIcon;
+    }
+
+    GImage getVedioImg(long vg) {
+        if (videoIcon == null) {
+            videoIcon = GImage.createImageFromJar("/res/img/video.png");
+        }
+        return videoIcon;
     }
 }

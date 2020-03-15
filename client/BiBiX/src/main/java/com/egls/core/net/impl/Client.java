@@ -1,13 +1,12 @@
 package com.egls.core.net.impl;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-
 import com.egls.core.net.PkgProtocol;
 import com.egls.core.util.Log;
+
 import javax.cldc.io.Connector;
 import javax.cldc.io.SocketConnection;
-import org.mini.net.SocketNative;
+import java.io.IOException;
+import java.net.InetSocketAddress;
 
 /**
  * @author EGLS
@@ -54,7 +53,6 @@ public class Client {
      *
      * @param host
      * @param port
-     * @param preactor
      */
     public Client(String host, int port) {
         try {
@@ -65,7 +63,7 @@ public class Client {
             // System.out.println(""+selector);
             conn = (SocketConnection) Connector.open("socket://" + r_ip + ":" + r_port);
             InetSocketAddress isa = new InetSocketAddress(host, port);
-            conn.setOption(SocketNative.SO_BLOCK, SocketNative.VAL_NON_BLOCK, 0);
+            conn.setSocketOption(SocketConnection.NONBLOCK, 1);
         } catch (IOException ex) {
             Log.error("construct Client error", ex);
             state = STATE_CLOSE;

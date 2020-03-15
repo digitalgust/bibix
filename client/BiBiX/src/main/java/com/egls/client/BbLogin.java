@@ -13,7 +13,6 @@ import org.mini.gui.event.GActionListener;
 import java.util.TimerTask;
 
 /**
- *
  * @author gust
  */
 public class BbLogin {
@@ -38,7 +37,7 @@ public class BbLogin {
         logoItem.setDrawBoader(false);
         form.add(logoItem);
 
-        GButton exitBtn = new GButton(BbStrings.getString("Exit"), 5, 5, 40, 28);
+        GButton exitBtn = new GButton(BbStrings.getString("Exit"), 5, 5, 40, 45);
         exitBtn.setActionListener((GObject gobj) -> {
             AppManager.getInstance().active();
         });
@@ -48,14 +47,14 @@ public class BbLogin {
         init(gframe.getView(), vg);
         gframe.setClosable(false);
         form.add(gframe);
-        form.setFps(30f);
+        GCallBack.getInstance().setFps(30f);
         gframe.align(GGraphics.HCENTER | GGraphics.VCENTER);
 
         return form;
     }
 
     public void init(GViewPort parent, final long vg) {
-        
+
         String username = "";
         String password = "";
         String s = BbClient.load();
@@ -84,20 +83,6 @@ public class BbLogin {
         GTextField pwd = new GTextField(password, BbStrings.getString("Password"), x, y, width, 28);
         pwd.setPasswordMode(true);
         parent.add(pwd);
-        y += 35;
-
-        GCheckBox cbox = new GCheckBox(BbStrings.getString("Remember me"), true, x, y, 140, 28);
-        parent.add(cbox);
-        GButton sig = new GButton(BbStrings.getString("Sign in/up"), x + 138, y, 140, 28);
-        sig.setBgColor(0, 96, 128, 255);
-        sig.setIcon(GObject.ICON_LOGIN);
-        parent.add(sig);
-        sig.setActionListener((GObject gobj) -> {
-            AudioLoader.play(AudioLoader.BIBI);
-            String passport = mail.getText();
-            String password1 = pwd.getText();
-            uilogin(passport, password1, GLanguage.getCurLang());
-        });
         y += 35;
 
         GList langList = new GList(x, y, width, 35);
@@ -150,6 +135,20 @@ public class BbLogin {
         parent.add(langList);
         langList.setSelectedIndex(idx);
         y += langList.getH() + 5;
+
+        GCheckBox cbox = new GCheckBox(BbStrings.getString("Remember me"), true, x, y, 140, 28);
+        parent.add(cbox);
+        GButton sig = new GButton(BbStrings.getString("Sign in/up"), x + 138, y, 140, 28);
+        sig.setBgColor(0, 96, 128, 255);
+        sig.setIcon(GObject.ICON_LOGIN);
+        parent.add(sig);
+        sig.setActionListener((GObject gobj) -> {
+            AudioLoader.play(AudioLoader.BIBI);
+            String passport = mail.getText();
+            String password1 = pwd.getText();
+            uilogin(passport, password1, GLanguage.getCurLang());
+        });
+        y += 35;
 
         lb_state = new GLabel("", x, y, 280, 20);
         parent.add(lb_state);

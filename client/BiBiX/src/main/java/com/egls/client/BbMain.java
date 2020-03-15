@@ -246,8 +246,6 @@ public class BbMain implements ChatStateListener {
             }
         };
 
-        form.setFps(30f);
-
         GForm.hideKeyboard();
 
         GContentItem.defaultItemW = form.getDeviceWidth() * .80f;
@@ -294,7 +292,11 @@ public class BbMain implements ChatStateListener {
                     if (data != null) {
                         GSessionItem gsi = curSelectedItem;
                         if (gsi != null) {
-                            MsgItem mi = new MsgItem(MsgItem.TYPE_IMAGE, data);
+                            String fn = MsgItem.STRING_IMAGE;
+                            if (url.toLowerCase().endsWith(MsgItem.STRING_VIDEO)) {
+                                fn = MsgItem.STRING_VIDEO;
+                            }
+                            MsgItem mi = new MsgItem(fn, data);
                             mi.fromid = bbClient.getRoleid();
                             mi.toid = gsi.groupInfo.getRoleId();
                             mi.groupid = gsi.groupInfo.getGroupId();
@@ -329,7 +331,7 @@ public class BbMain implements ChatStateListener {
         form.remove(gameView);
         form.remove(myView);
         form.add(cur);
-        form.reBoundle();
+        form.reSize();
     }
 
     void createMainMenu() {
@@ -367,7 +369,7 @@ public class BbMain implements ChatStateListener {
             getMyPanel();
             chatSlots.add(0, getSessionPanel(), GViewSlot.MOVE_FIXED);
             chatSlots.add(1, getChatPanel(), GViewSlot.MOVE_LEFT);
-            chatSlots.reBoundle();
+            chatSlots.reSize();
         }
         return chatSlots;
     }
@@ -469,24 +471,28 @@ public class BbMain implements ChatStateListener {
                                 new GActionListener() {
                                     @Override
                                     public void action(GObject gobj) {
-                                        Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_PHOTO, 0);
+                                        Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_PHOTO, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
+                                        form.setFocus(null);
                                     }
                                 },//camera
                                 new GActionListener() {
                                     @Override
                                     public void action(GObject gobj) {
-                                        Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_CAMERA, 0);
+                                        Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_CAMERA, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
+                                        form.setFocus(null);
                                     }
                                 },//voice
                                 new GActionListener() {
                                     @Override
                                     public void action(GObject gobj) {
+                                        form.setFocus(null);
                                         showAudioCaptureFrame();
                                     }
                                 },//voiceNow
                                 new GActionListener() {
                                     @Override
                                     public void action(GObject gobj) {
+                                        form.setFocus(null);
                                         GForm.addMessage(BbStrings.getString("Not available"));
                                     }
                                 },});
@@ -604,7 +610,7 @@ public class BbMain implements ChatStateListener {
             myphotoItem.setActionListener(new GActionListener() {
                 @Override
                 public void action(GObject gobj) {
-                    Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_HEAD, 0);
+                    Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_HEAD, Glfm.GLFMPickupTypeImage);
                 }
             });
             myphotoItem.setLocation(x, y);
@@ -822,7 +828,7 @@ public class BbMain implements ChatStateListener {
             //
             GMenuItem mi = (GMenuItem) menu.findByName(UI_NAME_MENUITEM_MY);
             if (mi != null) {
-                mi.addNewMsgCount(1);
+                mi.incMsgNew(1);
             }
         }
         GForm.flush();
@@ -1131,19 +1137,11 @@ public class BbMain implements ChatStateListener {
                             long friendid = Long.parseLong(strs[0]);
                             long sessionid = Long.parseLong(strs[1]);
                             MsgItem mi = ci.getMsgItem();
-                            switch (mi.getMediaType()) {
-                                case MsgItem.TYPE_IMAGE: {
-                                    getChat().sendImgMsg(friendid, sessionid, mi.thumb);
-                                    break;
-                                }
-                                case MsgItem.TYPE_VOICE: {
-                                    getChat().sendVoiceMsg(friendid, sessionid, mi.thumb);
-                                    break;
-                                }
-                                default: {
-                                    getChat().sendTextMsg(friendid, sessionid, mi.msg);
-                                    break;
-                                }
+                            if (mi.getMediaType() != MsgItem.TYPE_TEXT) {
+                                getChat().sendFileMsg(friendid, sessionid, mi.msg, mi.thumb);
+                            } else {
+                                getChat().sendTextMsg(friendid, sessionid, mi.msg);
+                                break;
                             }
 
                         } catch (Exception e) {
@@ -1234,7 +1232,7 @@ public class BbMain implements ChatStateListener {
             GSessionItem gsi = curSelectedItem;
             if (gsi != null) {
                 if (recoder.getCaptureZipData() != null) {
-                    MsgItem mi = new MsgItem(MsgItem.TYPE_VOICE, recoder.getCaptureZipData());
+                    MsgItem mi = new MsgItem(MsgItem.STRING_VOICE, recoder.getCaptureZipData());
                     mi.fromid = bbClient.getRoleid();
                     mi.toid = gsi.groupInfo.getRoleId();
                     mi.groupid = gsi.groupInfo.getGroupId();

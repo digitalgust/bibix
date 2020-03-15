@@ -30,8 +30,8 @@ public class BbApplication extends GApplication {
     BbClient client;
 
     @Override
-    public GForm getForm(GApplication appins) {
-        this.app = (BbApplication) appins;
+    public GForm getForm() {
+        this.app = this;
         if (curForm == null) {
             BbLogin login = new BbLogin();
             curForm = login.getLoginForm();
