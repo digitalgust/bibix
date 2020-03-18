@@ -16,7 +16,9 @@ import org.mini.glfm.Glfm;
 import org.mini.gui.*;
 import org.mini.gui.event.GActionListener;
 import org.mini.gui.event.GFocusChangeListener;
-import org.mini.gui.event.GStateChangeListener;
+import org.mini.gui.event.GKeyboardShowListener;
+import org.mini.gui.event.GSizeChangeListener;
+import org.mini.layout.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,15 +28,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mini.gui.GObject.*;
-
 /**
  * @author Gust
  */
-public class BbMain implements ChatStateListener {
-
-    static final String UI_NAME_MENUITEM_MY = "MenuItem_My";
-    static final String UI_NAME_TEXTFIELD_CHANGE_NAME = "TextField_ChangeName";
+public class BbChatUI implements ChatStateListener {
 
     BbClient bbClient;
 
@@ -49,15 +46,22 @@ public class BbMain implements ChatStateListener {
     };
 
     GForm form;
+
     GMenu menu;
+    GPanel chatRoot;
 
     GViewSlot chatSlots;
-
-    GPanel chatPanel;
-    GPanel sessionPanel;
     GViewPort gameView;
     GViewPort myView;
-    GImage logoImg;
+
+    ChatEventHandler eventHandler;
+    XContainer menuContainer;
+
+    GTextField nameField;
+
+    GTextBox msgBox;
+
+    GTextField search;
     //
     GSessionList sessionList;
     GContentView contentView;
@@ -65,194 +69,63 @@ public class BbMain implements ChatStateListener {
     GSessionItem curSelectedItem;
 
     //GFrame addFrame;
-    GTextBox msgBox;
-    GButton sendBtn;
+    GButton moreBtn;
     GButton mediaBtn;
     //
     GList moreMenu;
 
     static final int PICK_PHOTO = 101, PICK_CAMERA = 102, PICK_QR = 103, PICK_HEAD = 104;
+    static float menuH = 60, pad = 2;
 
-    static float menuH = 60, pad = 2, inputH = 60, addW = 60, addH = 28, sendW = 60;
-    ;
-    static float[][] align = {
-            {0, -1, -1, menuH}, //menu
-            //
-            {-1, pad, addW, addH}, //addBtn
-            {pad, 37, -1, 30}, //search
-            {0, 72, -1, -1}, //sessionList
-            //
-            {-1, pad, addW, addH}, //moreBtn
-            {-1, 37, -1, -1}, //contentView
-            {-1, -1, -1, inputH}, //msgBox
-            {-1, -1, sendW, inputH}, //sendBtn
 
-            //
-            {0, 0, -1, -1}, //chatPan
-            {0, 0, -1, -1}, //myPan
-            {0, 0, -1, -1}, //mapPan
-            //
-            {-1, pad, addW, addH}, //back2listBtn
-            {-1, 37, 200, 160}, //moreMenu
-            {-1, 40, -1, -1}, //addMember
-            {-1, 37, -1, -1}, //addMemberList
-            {-1, -1, 80, 30}, //addMemberOk
+    static final String REQUEST_LIST_NAME = "LIST_REQUEST";
 
-            //
-            {-1, -1, sendW, inputH}, //mediaBtn
-            {-1, pad, -1, addH}, //nameLab
-
-            //
-            {0, 0, -1, -1}, //slots
-    };
-
-    static int ATT_MENU = 0;
-    static int ATT_ADDBTN = 1;
-    static int ATT_SEARCH = 2;
-    static int ATT_SESSIONLIST = 3;
-    static int ATT_MOREBTN = 4;
-    static int ATT_CONTVIEW = 5;
-    static int ATT_MSGBOX = 6;
-    static int ATT_SENDBTN = 7;
-    static int ATT_CHATPAN = 8;
-    static int ATT_MYVIEW = 9;
-    static int ATT_GAMEVIEW = 10;
-    static int ATT_BACK2LISTBTN = 11;
-    static int ATT_MOREMENU = 12;
-    static int ATT_ADDMEMBER = 13;
-    static int ATT_ADDMEMBERLIST = 14;
-    static int ATT_ADDMEMBEROK = 15;
-    static int ATT_MEDIABTN = 16;
-    static int ATT_NAMELAB = 17;
-    static int ATT_SLOTS = 18;
-
-    void reAlign(float devW, float devH) {
-        align[ATT_MENU][TOP] = devH - menuH;
-        align[ATT_MENU][WIDTH] = devW;
-
-        align[ATT_ADDBTN][LEFT] = devW - addW - pad;
-
-        align[ATT_SEARCH][WIDTH] = devW - pad * 2;
-
-        align[ATT_SESSIONLIST][WIDTH] = devW;
-        align[ATT_SESSIONLIST][HEIGHT] = devH - menuH - pad - align[ATT_SESSIONLIST][TOP];
-
-        align[ATT_MOREBTN][LEFT] = devW - addW - pad;
-
-        align[ATT_NAMELAB][LEFT] = addW + pad;
-        align[ATT_NAMELAB][WIDTH] = devW - addW * 2 - pad * 4;
-
-        align[ATT_BACK2LISTBTN][LEFT] = pad;
-
-        align[ATT_CONTVIEW][LEFT] = 0;
-        align[ATT_CONTVIEW][WIDTH] = devW;
-        align[ATT_CONTVIEW][HEIGHT] = devH - menuH - align[ATT_CONTVIEW][TOP] - inputH - pad * 2;
-
-        align[ATT_MSGBOX][LEFT] = pad + sendW + pad;
-        align[ATT_MSGBOX][TOP] = devH - menuH - pad - inputH;
-        align[ATT_MSGBOX][WIDTH] = devW - pad * 4 - sendW * 2;
-
-        align[ATT_SENDBTN][LEFT] = devW - pad - sendW;
-        align[ATT_SENDBTN][TOP] = align[ATT_MSGBOX][TOP];
-
-        align[ATT_CHATPAN][WIDTH] = devW;
-        align[ATT_CHATPAN][HEIGHT] = devH - menuH;
-
-        align[ATT_MYVIEW][WIDTH] = devW;
-        align[ATT_MYVIEW][HEIGHT] = devH - menuH - pad;
-
-        align[ATT_GAMEVIEW][WIDTH] = devW;
-        align[ATT_GAMEVIEW][HEIGHT] = devH - menuH - pad;
-
-        align[ATT_MOREMENU][LEFT] = devW - align[ATT_MOREMENU][WIDTH] - pad;
-
-        align[ATT_ADDMEMBER][WIDTH] = devW - 80;
-        align[ATT_ADDMEMBER][HEIGHT] = align[ATT_CHATPAN][HEIGHT] - 80;
-        align[ATT_ADDMEMBER][LEFT] = 40;
-
-        align[ATT_ADDMEMBERLIST][WIDTH] = align[ATT_ADDMEMBER][WIDTH] - 4;
-        align[ATT_ADDMEMBERLIST][HEIGHT] = align[ATT_ADDMEMBER][HEIGHT] - 71 - 30 - pad * 2;
-        align[ATT_ADDMEMBERLIST][LEFT] = pad;
-
-        align[ATT_ADDMEMBEROK][LEFT] = (align[ATT_ADDMEMBER][WIDTH] - align[ATT_ADDMEMBEROK][WIDTH]) / 2;
-        align[ATT_ADDMEMBEROK][TOP] = align[ATT_ADDMEMBERLIST][TOP] + align[ATT_ADDMEMBERLIST][HEIGHT] + pad;
-
-        align[ATT_MEDIABTN][LEFT] = pad;
-        align[ATT_MEDIABTN][TOP] = align[ATT_SENDBTN][TOP];
-
-        align[ATT_SLOTS][WIDTH] = devW;
-        align[ATT_SLOTS][HEIGHT] = devH - menuH;
+    public BbChatUI(GForm pform, BbClient pclient) {
+        form = pform;
+        bbClient = pclient;
     }
 
-    void reBoundle() {
-        if (menu != null) {
-            menu.setLocation(align[ATT_MENU][LEFT], align[ATT_MENU][TOP]);
-        }
-
-        if (chatPanel != null) {
-            chatPanel.setSize(align[ATT_CHATPAN][WIDTH], align[ATT_CHATPAN][HEIGHT]);
-        }
-
-        if (myView != null) {
-            myView.setSize(align[ATT_MYVIEW][WIDTH], align[ATT_MYVIEW][HEIGHT]);
-        }
-
-        if (contentView != null) {
-            contentView.setSize(align[ATT_CONTVIEW][WIDTH], align[ATT_CONTVIEW][HEIGHT]);
-        }
-
-        if (sessionList != null) {
-            sessionList.setSize(align[ATT_SESSIONLIST][WIDTH], align[ATT_SESSIONLIST][HEIGHT]);
-        }
-
-        if (msgBox != null) {
-            msgBox.setLocation(align[ATT_MSGBOX][LEFT], align[ATT_MSGBOX][TOP]);
-        }
-
-        if (sendBtn != null) {
-            sendBtn.setLocation(align[ATT_SENDBTN][LEFT], align[ATT_SENDBTN][TOP]);
-        }
-        if (mediaBtn != null) {
-            mediaBtn.setLocation(align[ATT_MEDIABTN][LEFT], align[ATT_MEDIABTN][TOP]);
-        }
-        if (gameView != null) {
-            gameView.setSize(align[ATT_GAMEVIEW][WIDTH], align[ATT_GAMEVIEW][HEIGHT]);
-        }
-        if (chatSlots != null) {
-            chatSlots.setSize(align[ATT_SLOTS][WIDTH], align[ATT_SLOTS][HEIGHT]);
-        }
-
+    public void close() {
+//        if (chatRoot != null) {
+//            form.remove(chatRoot);
+//        }
+//        if (menu != null) {
+//            form.remove(menu);
+//        }
+        form.clear();
+        form.setSizeChangeListener(null);
+        form.setNotifyListener(null);
+        form.setActiveListener(null);
+        form.setPickListener(null);
     }
 
-    static final String REQUEST_LIST_NAME = "requestList";
-
-    public BbMain() {
-        bbClient = BbApplication.getInstance().client;
-    }
-
-    public GForm getMainForm() {
-        if (form != null) {
-            return form;
+    public GContainer getUI() {
+        if (chatRoot != null) {
+            return chatRoot;
         }
-        form = new GForm() {
-
-            @Override
-            public boolean update(long vg) {
-                if (getChat() == null) {
-                    return true;
-                }
-                getChat().sendDeviceToken();
-                return super.update(vg);
-            }
-        };
 
         GForm.hideKeyboard();
 
         GContentItem.defaultItemW = form.getDeviceWidth() * .80f;
 
-        reAlign(form.getDeviceWidth(), form.getDeviceHeight());
 
-        logoImg = GImage.createImageFromJar("/res/img/logo128.png");
+        String xmlStr = GToolkit.readFileFromJarAsString("/res/ui/ChatRoot.xml", "utf-8");
+        XContainer xc = new XPanel(null);
+        xc.parseXml(xmlStr);
+        eventHandler = new ChatEventHandler();
+        xc.build((int) form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH), eventHandler);
+
+        chatRoot = (GPanel) xc.getGui();
+        form.setSizeChangeListener(new GSizeChangeListener() {
+            @Override
+            public void onSizeChange(int width, int height) {
+                xc.reSize(width, height);
+                menuContainer.reSize(width, height);
+                menu.setLocation(0, form.getDeviceHeight() - menuH);
+                GContentItem.defaultItemW = form.getDeviceWidth() * .80f;
+            }
+        });
+
 
         createMainMenu();
         getCanvasPanel();
@@ -260,7 +133,25 @@ public class BbMain implements ChatStateListener {
         setCurrent(getChatSlots());
 
         menu.setFixed(true);
+        menu.setLocation(0, form.getDeviceHeight() - menuH);
         form.add(menu);
+
+        form.setKeyshowListener(new GKeyboardShowListener() {
+            @Override
+            public void keyboardShow(boolean show, float x, float y, float w, float h) {
+                //form.onSizeChange(form.getDeviceWidth(), (int) (form.getDeviceHeight() - h));
+                GPanel contentPanel = (GPanel) chatSlots.findByName("PAN_CONTENT");
+                if (contentPanel != null) {
+                    XContainer xc = (XContainer) contentPanel.getAttachment();
+                    if (show) {
+                        xc.reSize(form.getDeviceWidth(), (int) (form.getDeviceHeight() - h));
+                    } else {
+                        xc.reSize(form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH));
+                    }
+                    GForm.flush();
+                }
+            }
+        });
 
         form.setNotifyListener((String key, String val) -> {
             onNotify(key, val);
@@ -323,229 +214,113 @@ public class BbMain implements ChatStateListener {
                 }
             }
         });
-        return form;
+
+
+        return chatRoot;
     }
 
+
     void setCurrent(GContainer cur) {
-        form.remove(chatSlots);
-        form.remove(gameView);
-        form.remove(myView);
-        form.add(cur);
-        form.reSize();
+        chatRoot.remove(chatSlots);
+        chatRoot.remove(gameView);
+        chatRoot.remove(myView);
+        chatRoot.add(cur);
+        ((XContainer) chatRoot.getAttachment()).reSize((int) form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH));
     }
 
     void createMainMenu() {
-        GImage img = GImage.createImageFromJar("/res/img/session.png");
-        menu = new GMenu(align[ATT_MENU][LEFT], align[ATT_MENU][TOP], align[ATT_MENU][WIDTH], align[ATT_MENU][HEIGHT]);
-        GMenuItem item;
-        item = menu.addItem(null, img);//BbStrings.getString("Session")
-        item.setActionListener((GObject gobj) -> {
-            setCurrent(getChatSlots());
-            form.setScrollX(0.f);
-        });
-        img = GImage.createImageFromJar("/res/img/map.png");
-        item = menu.addItem(null, img);//BbStrings.getString("Map")
-        item.setActionListener((GObject gobj) -> {
-            GForm.addMessage(BbStrings.getString("It's in building, energy wasted"));
-            setCurrent(getCanvasPanel());
-        });
-        img = GImage.createImageFromJar("/res/img/my.png");
-        item = menu.addItem(null, img);//BbStrings.getString("My")
-        item.setName(UI_NAME_MENUITEM_MY);
-        item.setActionListener((GObject gobj) -> {
-            setCurrent(getMyPanel());
-        });
-        //item = menu.addItem("搜索", img);
+        String xmlStr = GToolkit.readFileFromJarAsString("/res/ui/MainMenu.xml", "utf-8");
+
+        UITemplate uit = new UITemplate(xmlStr);
+        for (String key : uit.getVariable()) {
+            uit.setVar(key, BbStrings.getString(key));
+        }
+
+        XContainer xc = new XPanel(null);
+        xc.parseXml(uit.parse());
+        xc.build((int) form.getDeviceWidth(), form.getDeviceHeight(), eventHandler);
+        menu = (GMenu) ((GContainer) xc.getGui()).findByName("MENU_MAIN");
+        //System.out.println("menu:" + menu);
+        menuContainer = xc;
     }
 
     public GContainer getChatSlots() {
         if (chatSlots == null) {
-            chatSlots = new GViewSlot(align[ATT_SLOTS][WIDTH], align[ATT_SLOTS][HEIGHT], GViewSlot.SCROLL_MODE_HORIZONTAL);
-            chatSlots.setLocation(align[ATT_SLOTS][LEFT], align[ATT_SLOTS][TOP]);
-            chatSlots.setSize(align[ATT_SLOTS][WIDTH], align[ATT_SLOTS][HEIGHT]);
+            String xmlStr = GToolkit.readFileFromJarAsString("/res/ui/ChatSlot.xml", "utf-8");
 
-            createMainMenu();
-            getCanvasPanel();
-            getMyPanel();
-            chatSlots.add(0, getSessionPanel(), GViewSlot.MOVE_FIXED);
-            chatSlots.add(1, getChatPanel(), GViewSlot.MOVE_LEFT);
-            chatSlots.reSize();
+            UITemplate uit = new UITemplate(xmlStr);
+            for (String key : uit.getVariable()) {
+                uit.setVar(key, BbStrings.getString(key));
+            }
+
+            XContainer.registerGUI("com.egls.client.extgui.XSessionList");
+            XContainer.registerGUI("com.egls.client.extgui.XContentView");
+
+            XContainer xc = new XViewSlot(null);
+            xc.parseXml(uit.parse());
+            xc.build((int) chatRoot.getW(), (int) (chatRoot.getH()), eventHandler);
+            chatSlots = (GViewSlot) xc.getGui();
+
+
+            search = (GTextField) chatSlots.findByName("INPUT_SEARCH");
+            msgBox = (GTextBox) chatSlots.findByName("INPUT_CHATMSG");
+            sessionList = (GSessionList) chatSlots.findByName("LIST_SESSION");
+            contentView = (GContentView) chatSlots.findByName("VP_CONTENT");
+            mediaBtn = (GButton) chatSlots.findByName("BT_MULTIMEDIA");
+            moreBtn = (GButton) chatSlots.findByName("BT_MORE");
+            contentView.setChatUI(this);
+            //System.out.println("sessionList:" + sessionList);
         }
         return chatSlots;
     }
 
     public GContainer getCanvasPanel() {
         if (gameView == null) {
-            gameView = new GViewPort();
-//            gameView.setLocation(align[ATT_GAMEVIEW][LEFT], align[ATT_GAMEVIEW][TOP]);
-//            gameView.setSize(align[ATT_GAMEVIEW][WIDTH], align[ATT_GAMEVIEW][HEIGHT]);
-            gameView.setLocation(0, 0);
-            gameView.setSize(form.getDeviceWidth(), form.getDeviceHeight() - menuH - pad);
+            String xmlStr = GToolkit.readFileFromJarAsString("/res/ui/GameCanvas.xml", "utf-8");
+
+            UITemplate uit = new UITemplate(xmlStr);
+            for (String key : uit.getVariable()) {
+                uit.setVar(key, BbStrings.getString(key));
+            }
+
+
+            XContainer xc = new XViewPort(null);
+            xc.parseXml(uit.parse());
+            xc.build((int) chatRoot.getW(), (int) (chatRoot.getH()), eventHandler);
+            gameView = (GViewPort) xc.getGui();
             bbClient.initGui(gameView);
         }
         return gameView;
     }
 
-    GPanel getSessionPanel() {
-        if (sessionPanel == null) {
 
-            sessionPanel = new GPanel();
-            sessionPanel.setLocation(align[ATT_CHATPAN][LEFT], align[ATT_CHATPAN][TOP]);
-            sessionPanel.setSize(align[ATT_CHATPAN][WIDTH], align[ATT_CHATPAN][HEIGHT]);
+    public GContainer getMyPanel() {
+        if (myView == null) {
+            String xmlStr = GToolkit.readFileFromJarAsString("/res/ui/MyPanel.xml", "utf-8");
 
-            //left
-            GButton addbtn = new GButton(BbStrings.getString("+ Add"), align[ATT_ADDBTN][LEFT], align[ATT_ADDBTN][TOP], align[ATT_ADDBTN][WIDTH], align[ATT_ADDBTN][HEIGHT]);
-            //addbtn.setBgColor(0, 96, 128, 255);
-            sessionPanel.add(addbtn);
-            addbtn.setActionListener((GObject gobj) -> {
-                showAddNewFrame();
-            });
-
-            GTextField search = new GTextField("", "search", align[ATT_SEARCH][LEFT], align[ATT_SEARCH][TOP], align[ATT_SEARCH][WIDTH], align[ATT_SEARCH][HEIGHT]);
-            search.setBoxStyle(GTextField.BOX_STYLE_SEARCH);
-            search.setStateChangeListener(new GStateChangeListener() {
-                @Override
-                public void onStateChange(GObject gobj) {
-                    String str = search.getText();
-                    if (sessionList != null) {
-                        sessionList.filterLabelWithKey(str);
-                    }
-                }
-            });
-            sessionPanel.add(search);
-
-            sessionList = new GSessionList(align[ATT_SESSIONLIST][LEFT], align[ATT_SESSIONLIST][TOP], align[ATT_SESSIONLIST][WIDTH], align[ATT_SESSIONLIST][HEIGHT]);
-            sessionList.setShowMode(GList.MODE_MULTI_SHOW);
-            sessionList.setItemHeight(50);
-            sessionPanel.add(sessionList);
+            UITemplate uit = new UITemplate(xmlStr);
+            for (String key : uit.getVariable()) {
+                uit.setVar(key, BbStrings.getString(key));
+            }
 
 
+            XContainer xc = new XViewPort(null);
+            xc.parseXml(uit.parse());
+            xc.build((int) chatRoot.getW(), (int) (chatRoot.getH()), eventHandler);
+            myView = (GViewPort) xc.getGui();
+
+            GLabel accountLab = (GLabel) myView.findByName("LAB_MYACCOUNT");
+            accountLab.setText(accountLab.getText() + bbClient.passport);
+            GLabel bbidLab = (GLabel) myView.findByName("LAB_MYBBID");
+            bbidLab.setText(bbidLab.getText() + bbClient.roleid);
+            GImageItem imgItem = (GImageItem) myView.findByName("IMG_MYHEAD");
+            imgItem.setImg(getHead(bbClient.getRoleid()));
+
+            //System.out.println("myView:" + myView);
         }
-        return sessionPanel;
+        return myView;
     }
 
-    GPanel getChatPanel() {
-        if (chatPanel == null) {
-
-            chatPanel = new GPanel();
-            chatPanel.setLocation(align[ATT_CHATPAN][LEFT], align[ATT_CHATPAN][TOP]);
-            chatPanel.setSize(align[ATT_CHATPAN][WIDTH], align[ATT_CHATPAN][HEIGHT]);
-
-
-            //right
-            GButton moreBtn = new GButton("...", align[ATT_MOREBTN][LEFT], align[ATT_MOREBTN][TOP], align[ATT_MOREBTN][WIDTH], align[ATT_MOREBTN][HEIGHT]);
-            //moreBtn.setBgColor(0, 96, 128, 255);
-            chatPanel.add(moreBtn);
-            moreBtn.setActionListener((GObject gobj) -> {
-                showMoreMenu();
-            });
-
-            GButton back2listBtn = new GButton("< " + BbStrings.getString("Session"), align[ATT_BACK2LISTBTN][LEFT], align[ATT_BACK2LISTBTN][TOP], align[ATT_BACK2LISTBTN][WIDTH], align[ATT_BACK2LISTBTN][HEIGHT]);
-            chatPanel.add(back2listBtn);
-            back2listBtn.setActionListener((GObject gobj) -> {
-                chatPanelShowLeft();
-            });
-
-            GLabel nameLab = new GLabel("", align[ATT_NAMELAB][LEFT], align[ATT_NAMELAB][TOP], align[ATT_NAMELAB][WIDTH], align[ATT_NAMELAB][HEIGHT]);
-            nameLab.setAlign(GGraphics.HCENTER | GGraphics.TOP);
-            nameLab.setName("nameLab");
-            chatPanel.add(nameLab);
-
-            contentView = new GContentView(this);
-            contentView.setLocation(align[ATT_CONTVIEW][LEFT], align[ATT_CONTVIEW][TOP]);
-            contentView.setSize(align[ATT_CONTVIEW][WIDTH], align[ATT_CONTVIEW][HEIGHT]);
-            chatPanel.add(contentView);
-
-            mediaBtn = new GButton(BbStrings.getString("+"), align[ATT_MEDIABTN][LEFT], align[ATT_MEDIABTN][TOP], align[ATT_MEDIABTN][WIDTH], align[ATT_MEDIABTN][HEIGHT]);
-            chatPanel.add(mediaBtn);
-            mediaBtn.setActionListener((GObject gobj) -> {
-                GList mediaMenu = GToolkit.getListMenu(new String[]{
-                                BbStrings.getString("Send Photo"),
-                                BbStrings.getString("Camera"),
-                                BbStrings.getString("Voice"),//
-                                BbStrings.getString("VoiceNow"),//
-                        },
-                        null,
-                        new GActionListener[]{
-                                //photo
-                                new GActionListener() {
-                                    @Override
-                                    public void action(GObject gobj) {
-                                        Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_PHOTO, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
-                                        form.setFocus(null);
-                                    }
-                                },//camera
-                                new GActionListener() {
-                                    @Override
-                                    public void action(GObject gobj) {
-                                        Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_CAMERA, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
-                                        form.setFocus(null);
-                                    }
-                                },//voice
-                                new GActionListener() {
-                                    @Override
-                                    public void action(GObject gobj) {
-                                        form.setFocus(null);
-                                        showAudioCaptureFrame();
-                                    }
-                                },//voiceNow
-                                new GActionListener() {
-                                    @Override
-                                    public void action(GObject gobj) {
-                                        form.setFocus(null);
-                                        GForm.addMessage(BbStrings.getString("Not available"));
-                                    }
-                                },});
-                mediaMenu.setSize(mediaMenu.getW(), 160);
-                mediaMenu.setInnerSize(mediaMenu.getW(), 160);
-                mediaMenu.setLocation(mediaBtn.getLocationLeft(), mediaBtn.getLocationTop() - mediaMenu.getH() - pad);
-                form.add(mediaMenu);
-                form.setFocus(mediaMenu);
-
-            });
-
-            msgBox = new GTextBox("", "Contents", align[ATT_MSGBOX][LEFT], align[ATT_MSGBOX][TOP], align[ATT_MSGBOX][WIDTH], align[ATT_MSGBOX][HEIGHT]) {
-//                @Override
-//                public void touchEvent(int phase, int x, int y) {
-//                    super.touchEvent(phase, x, y);
-//                    if (isInArea(x, y)) {
-//                        if (phase == Glfm.GLFMTouchPhaseEnded) {
-//                            msgBox.setKeyboardVisible(true);
-//                        }
-//                    }
-//                }
-
-            };
-            //msgBox.setKeyboardAutoPop(false);
-            chatPanel.add(msgBox);
-            form.setKeyshowListener((boolean show, float x, float y, float w, float h) -> {
-                //System.out.println("keyboardShow:" + show + "," + x + "," + y + "," + w + "," + h);
-                if (show) {
-                    reAlign(form.getDeviceWidth(), form.getDeviceHeight() - h);
-                    reBoundle();
-                } else {
-                    reAlign(form.getDeviceWidth(), form.getDeviceHeight());
-                    reBoundle();
-                }
-                GObject.flush();
-            });
-
-            sendBtn = new GButton(BbStrings.getString("Send"), align[ATT_SENDBTN][LEFT], align[ATT_SENDBTN][TOP], align[ATT_SENDBTN][WIDTH], align[ATT_SENDBTN][HEIGHT]);
-            sendBtn.setBgColor(0, 96, 128, 255);
-            chatPanel.add(sendBtn);
-            sendBtn.setActionListener((GObject gobj) -> {
-                GSessionItem gsi = curSelectedItem;
-                if (gsi != null) {
-                    getChat().sendTextMsg(gsi.groupInfo.getRoleId(), gsi.groupInfo.getGroupId(), msgBox.getText());
-                    msgBox.getParent().setFocus(msgBox);
-                    msgBox.setText("");
-                }
-            });
-
-            msgBox.setUnionObj(sendBtn);
-        }
-        return chatPanel;
-    }
 
     void chatPanelShowLeft() {
         GSessionItem gsi = curSelectedItem;
@@ -596,116 +371,13 @@ public class BbMain implements ChatStateListener {
         form.setFocus(frame);
     }
 
-    GContainer getMyPanel() {
-        if (myView == null) {
-            myView = new GViewPort();
-            myView.setLocation(align[ATT_MYVIEW][LEFT], align[ATT_MYVIEW][TOP]);
-            myView.setSize(align[ATT_MYVIEW][WIDTH], align[ATT_MYVIEW][HEIGHT]);
-
-            int pad = 5, x = 10, y = 10, w = (int) myView.getW() - 20, th = (int) myView.getH();
-
-            float iwidth = w / 3;
-            GImageItem myphotoItem = new GImageItem(getHead(bbClient.getRoleid()));
-            myphotoItem.setName("imgItemMyphoto");
-            myphotoItem.setActionListener(new GActionListener() {
-                @Override
-                public void action(GObject gobj) {
-                    Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_HEAD, Glfm.GLFMPickupTypeImage);
-                }
-            });
-            myphotoItem.setLocation(x, y);
-            myphotoItem.setSize(iwidth, iwidth);
-            myView.add(myphotoItem);
-            y += myphotoItem.getH() + pad * 2;
-
-            GLabel accountLab = new GLabel(BbStrings.getString("Account : ") + bbClient.passport, pad, y, myView.getW() - pad * 2, addH);
-            myView.add(accountLab);
-            y += addH + pad;
-
-            GLabel bbidLab = new GLabel(BbStrings.getString("My BBID : ") + bbClient.roleid, pad, y, myView.getW() - pad * 2, addH);
-            myView.add(bbidLab);
-            y += addH + pad;
-
-            GTextField nameField = new GTextField("", "Change Name", pad, y, myView.getW() - pad * 3 - addW, addH);
-            nameField.setName(UI_NAME_TEXTFIELD_CHANGE_NAME);
-            myView.add(nameField);
-
-            GButton btn = new GButton(BbStrings.getString("Change"), (myView.getW() - addW - pad), y, addW, addH);
-            myView.add(btn);
-            btn.setActionListener((GObject gobj) -> {
-                String n = nameField.getText();
-                getChat().sendFriendUpdate(bbClient.getRoleid(), n);
-                GForm.addMessage(BbStrings.getString("Submited change"));
-            });
-            y += addH + pad;
-
-            GLabel lb1 = new GLabel(BbStrings.getString("Request list"), x, y, w, addH);
-            myView.add(lb1);
-            y += addH + pad;
-
-            GList requestList = new GList(x, y, w, 120);
-            requestList.setName(REQUEST_LIST_NAME);
-            requestList.setShowMode(GList.MODE_MULTI_SHOW);
-            requestList.setScrollBar(true);
-            myView.add(requestList);
-            y += 120 + pad;
-
-            GButton qrBtn = new GButton(BbStrings.getString("Qr Code"), pad, y, myView.getW() - pad * 2, 35);
-            myView.add(qrBtn);
-            qrBtn.setActionListener((GObject gobj) -> {
-                if (getMyBbidQr() == null) {
-                    GFrame gf = GToolkit.getConfirmFrame(BbStrings.getString("Notify"), BbStrings.getString("Qr Code is generating"), null, null, null, null);
-                    form.add(gf);
-                    gf.align(GGraphics.HCENTER | GGraphics.VCENTER);
-                } else {
-                    GViewPort qrView = GToolkit.getImageView(form, getMyBbidQr(), null);
-                    form.add(qrView);
-                    form.setFocus(qrView);
-                }
-            });
-            y += 35 + pad;
-
-            GButton clearBtn = new GButton(BbStrings.getString("Clear All"), pad, y, myView.getW() - pad * 2, 35);
-            clearBtn.setBgColor(128, 16, 8, 255);
-            myView.add(clearBtn);
-            clearBtn.setActionListener((GObject gobj) -> {
-                getChat().clearAll();
-            });
-            y += 35 + pad;
-
-            GButton exitBtn = new GButton(BbStrings.getString("Exit to AppManager"), pad, y, myView.getW() - pad * 2, 35);
-            //logoutBtn.setBgColor(128, 16, 8, 255);
-            myView.add(exitBtn);
-            exitBtn.setActionListener((GObject gobj) -> {
-                AppManager.getInstance().active();
-            });
-            y += 35 + pad;
-
-            GButton logoutBtn = new GButton(BbStrings.getString("Logout"), pad, y, myView.getW() - pad * 2, 35);
-            //logoutBtn.setBgColor(128, 16, 8, 255);
-            myView.add(logoutBtn);
-            logoutBtn.setActionListener((GObject gobj) -> {
-                bbClient.logout();
-            });
-            y += 35 + pad;
-        }
-        String name = bbClient.getGameRun().getMyPlayer().getName();
-        GTextField nameField = (GTextField) myView.findByName(UI_NAME_TEXTFIELD_CHANGE_NAME);
-        nameField.setText(name);
-
-        GImageItem myphotoItem = (GImageItem) myView.findByName("imgItemMyphoto");
-        //System.out.println("show mypanel " + getHead(bbClient.getRoleid()));
-        myphotoItem.setImg(getHead(bbClient.getRoleid()));
-        return myView;
-    }
-
     @Override
     public void onGroupAdd(ChatGroupInfo sd, long lastMsgAt) {
         GSessionItem gsi = sessionList.findSessionItem(0, sd.groupid);
         if (gsi == null) {
             gsi = new GSessionItem(sd, this);
             gsi.groupInfo = sd;
-            sessionList.addItem(0, gsi);
+            sessionList.add(0, gsi);
             addSessionItemAction(gsi);
         }
         gsi.setLabel(sd.toString());
@@ -720,7 +392,7 @@ public class BbMain implements ChatStateListener {
     public void onGroupRemove(ChatGroupInfo sd) {
         GObject go = sessionList.findSessionItem(0, sd.groupid);
         if (go == null) {
-            sessionList.removeItem(go);
+            sessionList.remove(go);
             GForm.flush();
         }
     }
@@ -745,7 +417,7 @@ public class BbMain implements ChatStateListener {
         if (gsi == null) {
             gsi = new GSessionItem(mi, this);
             gsi.groupInfo = mi;
-            sessionList.addItem(0, gsi);
+            sessionList.add(0, gsi);
             addSessionItemAction(gsi);
         }
         if (lastMsgAt > 0) {
@@ -761,7 +433,7 @@ public class BbMain implements ChatStateListener {
         GObject go = sessionList.findSessionItem(mi.roleid, 0);
         if (go != null) {
             GSessionItem gsi = (GSessionItem) (go);
-            sessionList.removeItem(gsi);
+            sessionList.remove(gsi);
             GForm.flush();
         }
     }
@@ -769,7 +441,7 @@ public class BbMain implements ChatStateListener {
     @Override
     public void onFriendUpdated(MemberInfo mi) {
         if (mi.roleid == bbClient.getRoleid()) {
-            GTextField nameField = (GTextField) myView.findByName(UI_NAME_TEXTFIELD_CHANGE_NAME);
+            GTextField nameField = (GTextField) myView.findByName("INPUT_MYNICK");
             nameField.setText(mi.name);
         } else {
             GSessionItem gsi = (GSessionItem) sessionList.findSessionItem(mi.roleid, 0);
@@ -826,7 +498,7 @@ public class BbMain implements ChatStateListener {
             });
 
             //
-            GMenuItem mi = (GMenuItem) menu.findByName(UI_NAME_MENUITEM_MY);
+            GMenuItem mi = (GMenuItem) menu.findByName("MI_MY");
             if (mi != null) {
                 mi.incMsgNew(1);
             }
@@ -858,7 +530,7 @@ public class BbMain implements ChatStateListener {
 
     void showMoreMenu() {
         if (moreMenu == null) {
-            moreMenu = new GList(align[ATT_MOREMENU][LEFT], align[ATT_MOREMENU][TOP], align[ATT_MOREMENU][WIDTH], align[ATT_MOREMENU][HEIGHT]);
+            moreMenu = new GList(form.getDeviceWidth() - 200 - pad, moreBtn.getY() + moreBtn.getH() + pad, 200, 160);
             moreMenu.setShowMode(GList.MODE_MULTI_SHOW);
             moreMenu.setBgColor(GToolkit.getStyle().getFrameBackground());
             moreMenu.setFocusListener(new GFocusChangeListener() {
@@ -1282,7 +954,7 @@ public class BbMain implements ChatStateListener {
                     }
                 }
             }
-            GLabel nameLab = (GLabel) chatPanel.findByName("nameLab");
+            GLabel nameLab = (GLabel) chatSlots.findByName("LAB_UNAME");
             if (nameLab != null) {
                 nameLab.setText(gsi.getLabel());
             }
@@ -1374,5 +1046,119 @@ public class BbMain implements ChatStateListener {
 
     void onNotify(String key, String val) {
         System.out.println("notify key:" + key + "  val:" + val);
+    }
+
+
+    class ChatEventHandler extends XEventHandler {
+
+
+        @Override
+        public void action(GObject gobj, String cmd) {
+            String name = gobj.getName();
+
+            if ("BT_ADDFRIEND".equals(name)) {
+                showAddNewFrame();
+            } else if ("BT_MULTIMEDIA".equals(name)) {
+                actionMultiMedia();
+            } else if ("BT_SEND".equals(name)) {
+                GSessionItem gsi = curSelectedItem;
+                if (gsi != null) {
+                    getChat().sendTextMsg(gsi.groupInfo.getRoleId(), gsi.groupInfo.getGroupId(), msgBox.getText());
+                    msgBox.getParent().setFocus(msgBox);
+                    msgBox.setText("");
+                }
+            } else if ("BT_BACKTOSESSION".equals(name)) {
+                chatPanelShowLeft();
+            } else if ("IMG_MYHEAD".equals(name)) {
+                Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_HEAD, Glfm.GLFMPickupTypeImage);
+            } else if ("BT_CHANGENICK".equals(name)) {
+                String n = nameField.getText();
+                getChat().sendFriendUpdate(bbClient.getRoleid(), n);
+                GForm.addMessage(BbStrings.getString("Submited change"));
+            } else if ("BT_QRCODE".equals(name)) {
+                if (getMyBbidQr() == null) {
+                    GFrame gf = GToolkit.getConfirmFrame(BbStrings.getString("Notify"), BbStrings.getString("Qr Code is generating"), null, null, null, null);
+                    form.add(gf);
+                    gf.align(GGraphics.HCENTER | GGraphics.VCENTER);
+                } else {
+                    GViewPort qrView = GToolkit.getImageView(form, getMyBbidQr(), null);
+                    form.add(qrView);
+                    form.setFocus(qrView);
+                }
+            } else if ("BT_CLEARALL".equals(name)) {
+                getChat().clearAll();
+            } else if ("BT_LOGOUT".equals(name)) {
+                bbClient.logout();
+            } else if ("BT_EXIT".equals(name)) {
+                AppManager.getInstance().active();
+            } else if ("BT_MORE".equals(name)) {
+                showMoreMenu();
+            } else if ("MI_SESSION".equals(name)) {
+                setCurrent(getChatSlots());
+                form.setScrollX(0.f);
+            } else if ("MI_GAME".equals(name)) {
+                GForm.addMessage(BbStrings.getString("It's in building, energy wasted"));
+                setCurrent(getCanvasPanel());
+            } else if ("MI_MY".equals(name)) {
+                setCurrent(getMyPanel());
+            }
+        }
+
+
+        public void onStateChange(GObject gobj, String cmd) {
+            String name = gobj.getName();
+            if ("INPUT_SEARCH".equals(name)) {
+                String str = search.getText();
+                if (sessionList != null) {
+                    sessionList.filterLabelWithKey(str);
+                }
+            }
+        }
+
+
+        private void actionMultiMedia() {
+            GList mediaMenu = GToolkit.getListMenu(new String[]{
+                            BbStrings.getString("Send Photo"),
+                            BbStrings.getString("Camera"),
+                            BbStrings.getString("Voice"),//
+                            BbStrings.getString("VoiceNow"),//
+                    },
+                    null,
+                    new GActionListener[]{
+                            //photo
+                            new GActionListener() {
+                                @Override
+                                public void action(GObject gobj) {
+                                    Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_PHOTO, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
+                                    form.setFocus(null);
+                                }
+                            },//camera
+                            new GActionListener() {
+                                @Override
+                                public void action(GObject gobj) {
+                                    Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_CAMERA, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
+                                    form.setFocus(null);
+                                }
+                            },//voice
+                            new GActionListener() {
+                                @Override
+                                public void action(GObject gobj) {
+                                    form.setFocus(null);
+                                    showAudioCaptureFrame();
+                                }
+                            },//voiceNow
+                            new GActionListener() {
+                                @Override
+                                public void action(GObject gobj) {
+                                    form.setFocus(null);
+                                    GForm.addMessage(BbStrings.getString("Not available"));
+                                }
+                            },});
+            mediaMenu.setSize(mediaMenu.getW(), 160);
+            mediaMenu.setInnerSize(mediaMenu.getW(), 160);
+            mediaMenu.setLocation(mediaBtn.getX(), mediaBtn.getY() - mediaMenu.getH() - pad);
+            form.add(mediaMenu);
+            form.setFocus(mediaMenu);
+        }
     }
 }

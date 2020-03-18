@@ -1,0 +1,7 @@
+<panel w="100%" h="100%">
+    <menu name="MENU_MAIN" x="0" y="0" w="100%" h="60" dock="bottom">
+        <mi name="MI_SESSION" pic="/res/img/session.png"></mi>
+        <mi name="MI_GAME" pic="/res/img/map.png"></mi>
+        <mi name="MI_MY" pic="/res/img/my.png"></mi>
+    </menu>
+</panel>

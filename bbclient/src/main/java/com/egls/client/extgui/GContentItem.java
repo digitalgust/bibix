@@ -5,7 +5,7 @@
  */
 package com.egls.client.extgui;
 
-import com.egls.client.BbMain;
+import com.egls.client.BbChatUI;
 import com.egls.client.BbStrings;
 import com.egls.client.chat.MsgItem;
 import org.mini.glfm.Glfm;
@@ -36,7 +36,7 @@ public class GContentItem extends GObject {
 
     public static GImage voiceIcon, videoIcon;
 
-    BbMain app;
+    BbChatUI app;
     MsgItem msg;
     GImage img;//byte[] icon;
     String attachmentid;
@@ -51,7 +51,7 @@ public class GContentItem extends GObject {
     float contW, contH;
     GForm form;
 
-    public GContentItem(MsgItem mi, GForm form, BbMain app) {
+    public GContentItem(MsgItem mi, GForm form, BbChatUI app) {
         this.msg = mi;
         this.form = form;
         this.app = app;

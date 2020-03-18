@@ -1,0 +1,16 @@
+<viewport name="VP_GAMECANVAS" w="100%" h="100%" align="left,top">
+    <img name="IMG_MYHEAD" w="128" h="128"></img>
+    <br/>
+    <label name="LAB_MYACCOUNT" w="100%" h="30" align="left,vcenter" addon="10">{Account : }</label>
+    <label name="LAB_MYBBID" w="100%" h="30" align="left,vcenter" addon="10">{My BBID : }</label>
+    <input name="INPUT_MYNICK" w="80%" h="40" hint="Change Name"></input>
+    <button name="BT_CHANGENICK" w="20%" h="40">{Change}</button>
+    <label name="LAB_REQUEST" w="100%" h="30" align="left,vcenter" addon="10">{Request list}</label>
+    <list name="LIST_REQUEST" w="100%" h="40">
+    </list>
+    <button name="BT_QRCODE" w="100%" h="40">{Qr Code}</button>
+    <button name="BT_CLEARALL" w="100%" h="40" bgcolor="801008ff">{Clear All}</button>
+    <button name="BT_LOGOUT" w="100%" h="40">{Logout}</button>
+    <button name="BT_EXIT" w="100%" h="40">{Exit to AppManager}</button>
+
+</viewport>

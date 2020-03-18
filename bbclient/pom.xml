@@ -69,6 +69,12 @@
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>
                                 </copy>
+                                <mkdir dir="${basedir}/../../../miniJVM/binary/macos/apps/"/>
+                                <copy todir="${basedir}/../../../miniJVM/binary/macos/apps/" overwrite="true" >
+                                    <fileset dir="${project.build.directory}" erroronmissingdir="false">
+                                        <include name="${project.artifactId}.jar"/>
+                                    </fileset>
+                                </copy>
                             </tasks>        
                         </configuration>        
                     </execution>    

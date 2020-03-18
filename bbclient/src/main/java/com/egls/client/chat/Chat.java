@@ -5,7 +5,7 @@
  */
 package com.egls.client.chat;
 
-import com.egls.client.BbApplication;
+import com.egls.client.BbMain;
 import com.egls.client.BbClient;
 import com.egls.client.chat.bean.ChatGroupInfo;
 import com.egls.client.chat.bean.MemberInfo;
@@ -39,10 +39,9 @@ public class Chat {
 
     public Chat(BbClient bb) {
         bbClient = bb;
-        setChatStateListener(listener);
 
-        msgdb = new MsgDatabase(BbApplication.getInstance().getSaveRoot(), bbClient.getRoleid());
-        imagedb = new ImageDatabase(BbApplication.getInstance().getSaveRoot(), "");
+        msgdb = new MsgDatabase(BbMain.getInstance().getSaveRoot(), bbClient.getRoleid());
+        imagedb = new ImageDatabase(BbMain.getInstance().getSaveRoot(), "");
 
 
     }

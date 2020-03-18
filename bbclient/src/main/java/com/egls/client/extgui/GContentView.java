@@ -5,24 +5,36 @@
  */
 package com.egls.client.extgui;
 
-import com.egls.client.BbMain;
+import com.egls.client.BbChatUI;
 import org.mini.gui.GObject;
 import org.mini.gui.GViewPort;
 
 /**
- *
  * @author Gust
  */
 public class GContentView extends GViewPort {
 
     public static float itemW, itemH;
     public static final float PAD = 10;
+    BbChatUI chatUI;
 
-    BbMain app;
+    public GContentView() {
 
-    public GContentView(BbMain app) {
-        this.app = app;
     }
+
+    public GContentView(BbChatUI app) {
+        this.chatUI = app;
+    }
+
+
+    public BbChatUI getChatUI() {
+        return chatUI;
+    }
+
+    public void setChatUI(BbChatUI chatUI) {
+        this.chatUI = chatUI;
+    }
+
 
     public float getAfterLastItem() {
         float h = 0;
@@ -139,9 +151,9 @@ public class GContentView extends GViewPort {
     public boolean dragEvent(float dx, float dy, float x, float y) {
         float scrollY = getScrollY();
         if ((scrollY == 0 || (getH() - getInnerH() == 0)) && dy > 0) {
-            app.loadPrePage();
+            chatUI.loadPrePage();
         } else if ((scrollY == 1 || (getH() - getInnerH() == 0)) && dy < 0) {
-            app.loadNextPage();
+            chatUI.loadNextPage();
         }
         reSize();
         flush();

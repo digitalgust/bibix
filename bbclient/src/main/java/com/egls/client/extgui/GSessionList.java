@@ -5,15 +5,15 @@
  */
 package com.egls.client.extgui;
 
-import java.util.Comparator;
-import java.util.List;
 import org.mini.gui.GList;
 import org.mini.gui.GListItem;
 import org.mini.gui.GObject;
 
+import java.util.List;
+
 /**
  *
- * @author Gust
+ * @author GustXList
  */
 public class GSessionList extends GList {
 

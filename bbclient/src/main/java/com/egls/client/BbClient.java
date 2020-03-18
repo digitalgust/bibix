@@ -5,30 +5,23 @@
  */
 package com.egls.client;
 
-import com.egls.client.audio.AudioLoader;
 import com.egls.client.chat.Chat;
-import com.egls.client.chat.ChatStateListener;
 import com.egls.client.game.Const;
 import com.egls.client.game.GameRun;
 import com.egls.client.game.MainCanvas;
-import com.egls.core.net.impl.Client;
 import com.egls.client.netmgr.CmdPkg;
 import com.egls.client.netmgr.HeroPkgProtocol;
 import com.egls.client.netmgr.NetConn;
 import com.egls.client.util.NetCmdHandler;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
+import com.egls.core.net.impl.Client;
 import org.mini.crypt.AsynCrypt;
 import org.mini.crypt.XorCrypt;
 import org.mini.gui.GViewPort;
 
+import java.io.*;
+import java.math.BigInteger;
+
 /**
- *
  * @author Gust
  */
 public class BbClient implements Runnable, NetCmdHandler {
@@ -126,7 +119,7 @@ public class BbClient implements Runnable, NetCmdHandler {
                         if (System.currentTimeMillis() - loginTimeAt > LOGIN_TIMEOUT) {
                             loginMsg = BbStrings.getString("login timeout");
                             setState(STATE_NONE);
-                            BbApplication.showLoginForm();
+                            BbMain.getInstance().showLoginFrame();
                         }
                         break;
                     case STATE_RELOGIN:
@@ -207,6 +200,7 @@ public class BbClient implements Runnable, NetCmdHandler {
                         }
                         case STATE_GAMERUN: {
                             if (gameRun != null) {
+                                chat.sendDeviceToken();
                                 gameRun.processCmd(cmd);
                             }
                             break;
@@ -235,14 +229,14 @@ public class BbClient implements Runnable, NetCmdHandler {
                 if (b) {
                     sendXorKey();
                     chat = new Chat(this);
-                    BbMain main = BbApplication.showMainForm();
-                    chat.setChatStateListener((ChatStateListener) main);
+                    BbMain.getInstance().showChatUI();
+                    chat.setChatStateListener(BbMain.getInstance().getChatUI());
                     chat.initFriendList();
                     chat.sendClientActive(true);
                     setState(BbClient.STATE_GAMERUN);
                 } else if (state == STATE_LOGING) {
                     setState(BbClient.STATE_NONE);
-                    BbApplication.showLoginForm();
+                    BbMain.getInstance().showLoginFrame();
                 } else if (state == STATE_RELOGING) {
                 }
                 break;
@@ -286,7 +280,7 @@ public class BbClient implements Runnable, NetCmdHandler {
         BbClient.passport = passport;
         BbClient.password = password;
 
-        String respath = BbApplication.getInstance().getSaveRoot();
+        String respath = BbMain.getInstance().getSaveRoot();
         File f = new File(respath + CFG_FILE_NAME);
 
         try {
@@ -300,7 +294,7 @@ public class BbClient implements Runnable, NetCmdHandler {
     }
 
     static public String load() {
-        String respath = BbApplication.getInstance().getSaveRoot();
+        String respath = BbMain.getInstance().getSaveRoot();
         File f = new File(respath + CFG_FILE_NAME);
         String s = null;
         if (f.exists()) {
@@ -354,6 +348,6 @@ public class BbClient implements Runnable, NetCmdHandler {
         conn.close();
         roleid = 0;
         setState(BbClient.STATE_NONE);
-        BbApplication.showLoginForm();
+        BbMain.getInstance().showLoginFrame();
     }
 }

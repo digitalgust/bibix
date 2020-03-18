@@ -26,8 +26,8 @@ public class BbStrings extends GLanguage {
         addString("bbid not illegal", new String[]{"bbid not illegal", "bbid 不正确", "bbid 不正確"});
         addString("Remember me", new String[]{"Remember me", "记住", "記住"});
         addString("Sign in/up", new String[]{"Sign in/up", "登入/注册", "登入/注冊"});
-        addString("Login", new String[]{"Login", "登录", "登錄"});
-        addString("Email (auto sign up if not exists)", new String[]{"Email (auto sign up if not exists)", "帐号(不存在时将注册)", "帳號(不存在時將注冊)"});
+        addString("Login", new String[]{"Login", "登录", "登入"});
+        addString("Auto sign up if account not exists", new String[]{"Auto sign up if account not exists", "帐号不存在时将注册", "帳號不存在時將注冊"});
         addString("BiBi", new String[]{"BiBi", "BiBi", "BiBi"});
         addString("Email", new String[]{"Email", "邮件地址", "電郵"});
         addString("Password", new String[]{"Password", "密码", "密碼"});
@@ -45,7 +45,7 @@ public class BbStrings extends GLanguage {
         addString("Remove", new String[]{"Remove", "移除", "移除"});
         addString("Camera Scan", new String[]{"Camera Scan", "扫一扫", "掃一掃"});
         addString("Change", new String[]{"Change", "修改", "修改"});
-        addString("Logout", new String[]{"Logout", "退出登录", "退出登錄"});
+        addString("Logout", new String[]{"Logout", "退出登录", "登出"});
         addString("Qr Code", new String[]{"Qr Code", "二维码", "二維碼"});
         addString("Send Photo", new String[]{"Send Photo", "发送照片", "發送照片"});
         addString("Camera", new String[]{"Camera", "拍摄照片", "拍攝照片"});

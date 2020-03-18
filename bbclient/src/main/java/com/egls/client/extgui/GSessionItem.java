@@ -5,11 +5,9 @@
  */
 package com.egls.client.extgui;
 
-import com.egls.client.BbApplication;
-import com.egls.client.BbMain;
+import com.egls.client.BbChatUI;
 import com.egls.client.chat.bean.SessionInfo;
 import org.mini.gui.GListItem;
-import static org.mini.gui.GObject.TYPE_UNKNOW;
 import org.mini.gui.GToolkit;
 
 /**
@@ -20,11 +18,11 @@ public class GSessionItem extends GListItem {
 
     public SessionInfo groupInfo;
     int msgNewCount;
-    BbMain app;
+    BbChatUI app;
 
     final static float NOTIFY_R = 12.f;
 
-    public GSessionItem(SessionInfo gi, BbMain app) {
+    public GSessionItem(SessionInfo gi, BbChatUI app) {
         super(null, gi.toString());
         this.app = app;
         groupInfo = gi;

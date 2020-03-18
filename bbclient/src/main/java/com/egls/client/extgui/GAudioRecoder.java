@@ -6,24 +6,14 @@
 package com.egls.client.extgui;
 
 import com.egls.client.BbStrings;
-import com.egls.client.audio.AudioLoader;
-import static com.egls.client.extgui.GAudioRecoder.SCROLLBAR_TIME_NAME;
-import org.mini.gui.GButton;
-import org.mini.gui.GForm;
-import org.mini.gui.GFrame;
-import org.mini.gui.GImage;
-import org.mini.gui.GImageItem;
-import org.mini.gui.GLabel;
-import org.mini.gui.GObject;
-import org.mini.gui.GScrollBar;
+import org.mini.gui.*;
 import org.mini.gui.event.GActionListener;
 import org.mini.gui.event.GFocusChangeListener;
+import org.mini.media.AudioCallback;
 import org.mini.media.AudioDecoder;
+import org.mini.media.AudioMgr;
 import org.mini.nanovg.Nanovg;
 import org.mini.zip.Zip;
-import org.mini.gui.GViewPort;
-import org.mini.media.AudioCallback;
-import org.mini.media.AudioMgr;
 
 /**
  *
@@ -69,7 +59,7 @@ public class GAudioRecoder extends GFrame {
         GImageItem imgItem = new GImageItem(img);
         imgItem.setSize(imgw, imgh);
         imgItem.setLocation(gap, y);
-        imgItem.setDrawBoader(false);
+        imgItem.setDrawBorder(false);
         view.add(imgItem);
 
         GScrollBar scrobar = new GScrollBar();

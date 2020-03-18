@@ -5,7 +5,7 @@
  */
 package com.egls.client.audio;
 
-import com.egls.client.BbApplication;
+import com.egls.client.BbMain;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class AudioLoader {
 
     public static byte[] readFile(String s) {
         try {
-            File f = new File(BbApplication.getInstance().getSaveRoot() + s);
+            File f = new File(BbMain.getInstance().getSaveRoot() + s);
             byte[] b = new byte[(int) f.length()];
 
             FileInputStream dis = new FileInputStream(f);

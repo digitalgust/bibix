@@ -1,0 +1,18 @@
+<frame name="FRAME_LOGIN" w="300" h="270" title="{BiBi}" align="hcenter,top">
+    <panel name="PAN_LOGIN" w="98%" h="100%" move="right" align="hcenter,top">
+        <img pic="/res/img/logo128.png" w="40" h="40"></img>
+        <label w="80%" h="30" align="left,vcenter">{Login}</label>
+        <br/>
+        <input name="INPUT_EMAIL" w="100%" h="30" hint="Email">{LOAD_USERNAME}</input>
+        <input name="INPUT_PWD" w="100%" h="30" hint="Password" password="1">{LOAD_PASSWORD}</input>
+        <checkbox name="CHECK_REMBER" w="100%" h="30" selected="1">{Remember me}</checkbox>
+        <list name="LIST_LANG" w="100%" h="40">
+            <li name="LI_ENG">{English}</li>
+            <li name="LI_CHS">{简体中文}</li>
+            <li name="LI_CHT">{繁體中文}</li>
+        </list>
+        <button name="BT_EXIT" w="50%" h="40">{Exit}</button>
+        <button name="BT_LOGIN" w="50%" h="40" bgcolor="006080ff" emoji="E740">{Sign in/up}</button>
+        <label name="LAB_STATE" w="100%" h="30" color="ffffff40" align="left,vcenter">{Auto sign up if account not exists}</label>
+    </panel>
+</frame>

@@ -1,5 +1,5 @@
 name=BiBiX
-app=com.egls.client.BbApplication
+app=com.egls.client.BbMain
 icon=/res/img/logo128.png
 desc=This is a IM tools\n  It can send photo and voice, text etc.\n  The bibix would async encrypt all message;
 version=1.0.4

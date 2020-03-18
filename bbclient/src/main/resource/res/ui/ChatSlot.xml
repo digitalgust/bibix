@@ -1,0 +1,46 @@
+<viewslot w="100%" h="100%" scroll="h">
+    <panel w="100%" h="100%" move="fixed" align="hcenter,top">
+        <table w="98%" h="100%">
+            <tr>
+                <td>
+                    <label w="80%"></label>
+                    <button name="BT_ADDFRIEND" w="20%" h="30">{+ Add}</button>
+                    <input name="INPUT_SEARCH" w="100%" h="30" style="search" hint="Search"></input>
+                </td>
+            </tr>
+            <tr h="float">
+                <td>
+                    <com.egls.client.extgui.XSessionList name="LIST_SESSION" w="100%" h="100%" multiline="1" itemh="50">
+                    </com.egls.client.extgui.XSessionList>
+                </td>
+            </tr>
+        </table>
+    </panel>
+    <panel w="100%" h="100%" move="left">
+        <panel name="PAN_CONTENT" w="100%" h="100%" align="hcenter,top">
+            <table w="98%" h="100%">
+                <tr>
+                    <td>
+                        <button name="BT_BACKTOSESSION" w="20%" h="30">&lt;{Session}</button>
+                        <label name="LAB_UNAME" w="70%" h="30" align="hcenter,vcenter"></label>
+                        <button name="BT_MORE" w="10%" h="30">...</button>
+                    </td>
+                </tr>
+                <tr h="float">
+                    <td>
+                        <com.egls.client.extgui.XContentView name="VP_CONTENT" w="100%" h="100%">
+                        </com.egls.client.extgui.XContentView>
+                    </td>
+                </tr>
+                <tr h="60">
+                    <td>
+                        <button name="BT_MULTIMEDIA" w="10%" h="60">{+}</button>
+                        <input name="INPUT_CHATMSG" w="70%" h="60" hint="" union="BT_SEND" multiline="1"></input>
+                        <button name="BT_SEND" w="20%" h="60">{Send}</button>
+                    </td>
+                </tr>
+            </table>
+        </panel>
+    </panel>
+
+</viewslot>
