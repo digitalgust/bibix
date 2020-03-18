@@ -18,28 +18,28 @@
 <!--            <artifactId>minijvm_rt</artifactId>   -->
 <!--            <version>1.0</version>-->
 <!--            <scope>system</scope> -->
-<!--            <systemPath>${basedir}/../../../miniJVM/mobile/assets/resfiles/minijvm_rt.jar</systemPath> -->
+<!--            <systemPath>${basedir}/../../miniJVM/mobile/assets/resfiles/minijvm_rt.jar</systemPath> -->
 <!--        </dependency> -->
 <!--        <dependency>-->
 <!--            <groupId>org.minijvm</groupId>  -->
 <!--            <artifactId>glfm_gui</artifactId>   -->
 <!--            <version>1.0</version>-->
 <!--            <scope>system</scope> -->
-<!--            <systemPath>${basedir}/../../../miniJVM/mobile/assets/resfiles/glfm_gui.jar</systemPath> -->
+<!--            <systemPath>${basedir}/../../miniJVM/mobile/assets/resfiles/glfm_gui.jar</systemPath> -->
 <!--        </dependency> -->
         <dependency>
             <groupId>org.minijvm</groupId>
             <artifactId>minijvm_rt</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/../../../miniJVM/binary/lib/minijvm_rt.jar</systemPath>
+            <systemPath>${basedir}/../../miniJVM/binary/lib/minijvm_rt.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.minijvm</groupId>
             <artifactId>glfm_gui</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/../../../miniJVM/binary/libex/glfw_gui.jar</systemPath>
+            <systemPath>${basedir}/../../miniJVM/binary/libex/glfw_gui.jar</systemPath>
         </dependency>
     </dependencies>
     
@@ -57,20 +57,20 @@
                         <configuration>       
                             <tasks>
                                 <!--  copy to binary lib dir -->
-                                <mkdir dir="../../srv_res/webserver/htmls/down"/>        
-                                <copy todir="../../srv_res/webserver/htmls/down/" overwrite="true" > 
+                                <mkdir dir="../srv_res/webserver/htmls/down"/>
+                                <copy todir="../srv_res/webserver/htmls/down/" overwrite="true" >
                                     <fileset dir="${project.build.directory}" erroronmissingdir="false">
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>
                                 </copy>
-                                <mkdir dir="${basedir}/../../../miniJVM/binary/centos_x64/apps/"/>
-                                <copy todir="${basedir}/../../../miniJVM/binary/centos_x64/apps/" overwrite="true" >
+                                <mkdir dir="${basedir}/../../miniJVM/binary/centos_x64/apps/"/>
+                                <copy todir="${basedir}/../../miniJVM/binary/centos_x64/apps/" overwrite="true" >
                                     <fileset dir="${project.build.directory}" erroronmissingdir="false">
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>
                                 </copy>
-                                <mkdir dir="${basedir}/../../../miniJVM/binary/macos/apps/"/>
-                                <copy todir="${basedir}/../../../miniJVM/binary/macos/apps/" overwrite="true" >
+                                <mkdir dir="${basedir}/../../miniJVM/binary/macos/apps/"/>
+                                <copy todir="${basedir}/../../miniJVM/binary/macos/apps/" overwrite="true" >
                                     <fileset dir="${project.build.directory}" erroronmissingdir="false">
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>
