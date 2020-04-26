@@ -136,9 +136,10 @@ public class GContentView extends GViewPort {
     //        }
     //    }
 
-    public boolean update(long vg) {
+    @Override
+    public boolean paint(long vg) {
         //GToolkit.drawRect(vg, getViewX() + 1, getViewY() + 1, getViewW() - 2, getViewH() - 2, GToolkit.getStyle().getEditBackground());
-        super.update(vg);
+        super.paint(vg);
         return true;
     }
 

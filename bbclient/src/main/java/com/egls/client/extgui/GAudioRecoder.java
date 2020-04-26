@@ -71,8 +71,8 @@ public class GAudioRecoder extends GFrame {
 
         GLabel lab = new GLabel() {
             @Override
-            public boolean update(long vg) {
-                super.update(vg);
+            public boolean paint(long vg) {
+                super.paint(vg);
                 setText(Integer.toString((int) (scrobar.getPos() * audioTime)));
                 return true;
             }
@@ -85,8 +85,8 @@ public class GAudioRecoder extends GFrame {
         if (!playOnly) {
             GButton capRerecord = new GButton(BbStrings.getString("Record"), imgw + gap * 2, y, btnW, btnH) {
                 @Override
-                public boolean update(long vg) {
-                    super.update(vg);
+                public boolean paint(long vg) {
+                    super.paint(vg);
                     if (scrobar.getPos() >= 1.f) {
                         AudioMgr.captureStop();
                         data = AudioMgr.getCaptureData();

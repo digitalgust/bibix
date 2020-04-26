@@ -29,18 +29,14 @@ public class GSessionItem extends GListItem {
     }
 
     @Override
-    public int getType() {
-        return TYPE_UNKNOW;
-    }
-
-    public boolean update(long vg) {
+    public boolean paint(long vg) {
         if (groupInfo.isGroup()) {
             setImg(app.getGroupHead());
         } else {
             setImg(app.getHead(groupInfo.getRoleId()));
         }
 
-        super.update(vg);
+        super.paint(vg);
         float x = getX();
         float y = getY();
         float w = getW();

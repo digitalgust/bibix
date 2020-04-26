@@ -102,10 +102,6 @@ public class GContentItem extends GObject {
         setSize(contW + pad * 4 + defaultIconW, contH + pad * 2);
     }
 
-    @Override
-    public int getType() {
-        return TYPE_UNKNOW;
-    }
 
     public MsgItem getMsgItem() {
         return msg;
@@ -221,7 +217,7 @@ public class GContentItem extends GObject {
     }
 
     @Override
-    public boolean update(long vg) {
+    public boolean paint(long vg) {
         float x = getX();
         float y = getY();
         float w = getW();
