@@ -80,10 +80,9 @@ public class BbMain extends GApplication {
         uit.setVar("LOAD_PASSWORD", password);
 
 
-        XContainer xc = new XFrame();
-        xc.parseXml(uit.parse());
+        XContainer xc = (XContainer) XContainer.parseXml(uit.parse());
         LoginEventHandler eventHandler = new LoginEventHandler();
-        xc.build((int) devW, (int) (devH), eventHandler);
+        xc.build(devW, (devH), eventHandler);
 
         frame = (GFrame) xc.getGui();
 
