@@ -1090,7 +1090,6 @@ public class BbChatUI implements ChatStateListener {
                 showMoreMenu();
             } else if ("MI_SESSION".equals(name)) {
                 setCurrent(getChatSlots());
-                form.setScrollX(0.f);
             } else if ("MI_GAME".equals(name)) {
                 GForm.addMessage(BbStrings.getString("It's in building, energy wasted"));
                 setCurrent(getCanvasPanel());

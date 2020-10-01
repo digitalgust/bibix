@@ -155,7 +155,7 @@ public class Util {
             }
 
             //此处读的.lng文件，由工具生成
-            InputStream is = new Object().getClass().getResourceAsStream("/" + fileName + ".lng");
+            InputStream is = Util.class.getResourceAsStream("/" + fileName + ".lng");
             DataInputStream dis = new DataInputStream(is);
             short strCount = dis.readShort(); //得到字符串总个数
             strRes = new String[strCount]; //初始化数组
