@@ -162,7 +162,7 @@ public class BbMain extends GApplication {
             client = new BbClient();
             client.setState(BbClient.STATE_LOGIN);
             //
-            form.getTimer().schedule(new TimerTask() {
+            form.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     int state = client.getState();
