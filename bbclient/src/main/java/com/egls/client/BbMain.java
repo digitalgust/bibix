@@ -12,7 +12,6 @@ import org.mini.gui.event.GSizeChangeListener;
 import org.mini.layout.UITemplate;
 import org.mini.layout.XContainer;
 import org.mini.layout.XEventHandler;
-import org.mini.layout.XFrame;
 
 import java.util.TimerTask;
 
@@ -64,8 +63,12 @@ public class BbMain extends GApplication {
             }
             if (t.length > 2) {
                 int lang;
-                lang = Integer.parseInt(t[2]);
-                GLanguage.setCurLang(lang);
+                try {
+                    lang = Integer.parseInt(t[2]);
+                    GLanguage.setCurLang(lang);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
