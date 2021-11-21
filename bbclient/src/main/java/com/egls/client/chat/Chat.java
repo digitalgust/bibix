@@ -72,7 +72,7 @@ public class Chat {
     }
 
     public String genQrImage() {
-        String s = "http://www.ebsee.com/qr?cmd=add&bbid=" + bbClient.getRoleid();
+        String s = "http://www.ebsee.com:40080/qr?cmd=add&bbid=" + bbClient.getRoleid();
         return s;
     }
 

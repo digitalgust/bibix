@@ -20,7 +20,7 @@ public class Const {
 //    public static String serverIp = "192.168.0.253";
 //    public static String serverIp = "42.62.97.181";
     public static String serverIp = "www.ebsee.com";
-    public static int port = 5678;
+    public static int port = 40081;
 
     // *****************************************
     // *CMD*

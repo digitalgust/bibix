@@ -18,7 +18,10 @@ import org.mini.gui.event.GActionListener;
 import org.mini.gui.event.GFocusChangeListener;
 import org.mini.gui.event.GKeyboardShowListener;
 import org.mini.gui.event.GSizeChangeListener;
-import org.mini.layout.*;
+import org.mini.layout.UITemplate;
+import org.mini.layout.XContainer;
+import org.mini.layout.XEventHandler;
+import org.mini.layout.XmlExtAssist;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,9 +83,19 @@ public class BbChatUI implements ChatStateListener {
 
     static final String REQUEST_LIST_NAME = "LIST_REQUEST";
 
+    XmlExtAssist assist = new XmlExtAssist();
+
+    /**
+     * @param pform
+     * @param pclient
+     */
+
     public BbChatUI(GForm pform, BbClient pclient) {
         form = pform;
         bbClient = pclient;
+
+        assist.registerGUI("com.egls.client.extgui.XSessionList");
+        assist.registerGUI("com.egls.client.extgui.XContentView");
     }
 
     public void close() {
@@ -251,10 +264,8 @@ public class BbChatUI implements ChatStateListener {
                 uit.setVar(key, BbStrings.getString(key));
             }
 
-            XContainer.registerGUI("com.egls.client.extgui.XSessionList");
-            XContainer.registerGUI("com.egls.client.extgui.XContentView");
 
-            XContainer xc = (XContainer) XContainer.parseXml(uit.parse());
+            XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), assist);
             xc.build((int) chatRoot.getW(), (int) (chatRoot.getH()), eventHandler);
             chatSlots = (GViewSlot) xc.getGui();
 
@@ -503,17 +514,17 @@ public class BbChatUI implements ChatStateListener {
 
     void showConfirmAdd(GListItem gli) {
         GFrame frame = GToolkit.getConfirmFrame(BbStrings.getString("Request list"),
-                BbStrings.getString("bbid:") + gli.getXmlAgent(),
+                BbStrings.getString("bbid:") + gli.getAttachment(),
                 BbStrings.getString("Decline"),
                 //
                 (GObject gobj) -> {
-                    bbClient.getChat().sendFriendAdd((Long) gli.getXmlAgent(), false);
+                    bbClient.getChat().sendFriendAdd((Long) gli.getAttachment(), false);
                     form.remove(gobj.getFrame());
                 },
                 BbStrings.getString("Add"),
                 //
                 (GObject gobj) -> {
-                    bbClient.getChat().sendFriendAdd((Long) gli.getXmlAgent(), true);
+                    bbClient.getChat().sendFriendAdd((Long) gli.getAttachment(), true);
                     form.remove(gobj.getFrame());
                 });
 

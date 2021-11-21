@@ -7,6 +7,7 @@ package com.egls.client;
 
 import com.egls.client.audio.AudioLoader;
 import org.mini.apploader.AppManager;
+import org.mini.apploader.GApplication;
 import org.mini.gui.*;
 import org.mini.gui.event.GSizeChangeListener;
 import org.mini.layout.UITemplate;
@@ -131,7 +132,7 @@ public class BbMain extends GApplication {
                 uilogin(passport, password1, GLanguage.getCurLang());
             } else if ("BT_EXIT".equals(name)) {
                 app = null;
-                AppManager.getInstance().active();
+                close();
             } else if ("CHECK_REMBER".equals(name)) {
 
             } else if ("LI_ENG".equals(name)) {
@@ -226,7 +227,7 @@ public class BbMain extends GApplication {
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         if (client != null) {
             client.close();
         }
