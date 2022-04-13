@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.minijvm</groupId>
-    <artifactId>BiBiX</artifactId>
+    <artifactId>bibi</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -56,6 +56,12 @@
                         </goals>             
                         <configuration>       
                             <tasks>
+                                <mkdir dir="/Library/WebServer/Documents"/>
+                                <copy todir="/Library/WebServer/Documents" overwrite="true" >
+                                    <fileset dir="${project.build.directory}" erroronmissingdir="false">
+                                        <include name="${project.artifactId}.jar"/>
+                                    </fileset>
+                                </copy>
                                 <!--  copy to binary lib dir -->
                                 <mkdir dir="../srv_res/webserver/htmls/down"/>
                                 <copy todir="../srv_res/webserver/htmls/down/" overwrite="true" >

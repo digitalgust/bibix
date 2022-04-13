@@ -1,4 +1,4 @@
-<frame name="FRAME_LOGIN" w="300" h="270" title="{BiBi}" align="hcenter,top">
+<frame name="FRAME_LOGIN" w="300" h="270" title="{BiBi}" align="hcenter,top" closable="0">
     <panel name="PAN_LOGIN" w="98%" h="100%" move="right" align="hcenter,top">
         <img pic="/res/img/logo128.png" w="40" h="40"></img>
         <label w="80%" h="30" align="left,vcenter">{Login}</label>

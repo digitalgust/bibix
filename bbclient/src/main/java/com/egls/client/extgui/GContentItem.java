@@ -9,10 +9,10 @@ import com.egls.client.BbChatUI;
 import com.egls.client.BbStrings;
 import com.egls.client.chat.MsgItem;
 import org.mini.glfm.Glfm;
+import org.mini.glwrap.GLUtil;
 import org.mini.gui.*;
 import org.mini.gui.event.GActionListener;
 import org.mini.media.AudioMgr;
-import org.mini.nanovg.Gutil;
 import org.mini.nanovg.Nanovg;
 
 import static org.mini.gui.GToolkit.nvgRGBA;
@@ -86,7 +86,7 @@ public class GContentItem extends GObject {
                     nvgFontFace(vg, GToolkit.getFontWord());
 
                     nvgTextAlign(vg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
-                    text_arr = Gutil.toUtf8(s);
+                    text_arr = GLUtil.toUtf8(s);
 
                     bond = GToolkit.getTextBoundle(vg, s, contW);
                     if (bond[HEIGHT] < GToolkit.getStyle().getTextFontSize() * 2) {
@@ -160,7 +160,7 @@ public class GContentItem extends GObject {
     boolean touched = false;
 
     @Override
-    public boolean dragEvent(float dx, float dy, float x, float y) {
+    public boolean dragEvent(int button, float dx, float dy, float x, float y) {
         //touched = false;
         return false;
     }

@@ -154,7 +154,7 @@ public class BbChatUI implements ChatStateListener {
                 //form.onSizeChange(form.getDeviceWidth(), (int) (form.getDeviceHeight() - h));
                 GPanel contentPanel = (GPanel) chatSlots.findByName("PAN_CONTENT");
                 if (contentPanel != null) {
-                    XContainer xc = (XContainer) contentPanel.getXmlAgent();
+                    XContainer xc = (XContainer) contentPanel.getLayout();
                     if (show) {
                         xc.reSize(form.getDeviceWidth(), (int) (form.getDeviceHeight() - h));
                     } else {
@@ -237,7 +237,7 @@ public class BbChatUI implements ChatStateListener {
         chatRoot.remove(gameView);
         chatRoot.remove(myView);
         chatRoot.add(cur);
-        ((XContainer) chatRoot.getXmlAgent()).reSize((int) form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH));
+        chatRoot.getLayout().reSize((int) form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH));
     }
 
     void createMainMenu() {
@@ -497,7 +497,7 @@ public class BbChatUI implements ChatStateListener {
     public void onFriendRequest(long friendid, String nick) {
         GList list = (GList) myView.findByName(REQUEST_LIST_NAME);
         if (list != null) {
-            GListItem gli = list.addItems(null, BbStrings.getString("Request be friend") + " (" + friendid + ")" + nick);
+            GListItem gli = list.addItem(null, BbStrings.getString("Request be friend") + " (" + friendid + ")" + nick);
             gli.setAttachment(friendid);
             gli.setActionListener((GObject gobj) -> {
                 showConfirmAdd(gli);
@@ -551,11 +551,11 @@ public class BbChatUI implements ChatStateListener {
                     }
                 }
             });
-            GListItem itemInfo = moreMenu.addItems(null, BbStrings.getString("Infomation"));
+            GListItem itemInfo = moreMenu.addItem(null, BbStrings.getString("Infomation"));
             itemInfo.setActionListener((GObject gobj) -> {
                 showInfoFrame();
             });
-            GListItem itemClear = moreMenu.addItems(null, BbStrings.getString("Clear Message"));
+            GListItem itemClear = moreMenu.addItem(null, BbStrings.getString("Clear Message"));
             itemClear.setActionListener((GObject gobj) -> {
                 form.remove(moreMenu);
 
@@ -586,7 +586,7 @@ public class BbChatUI implements ChatStateListener {
                 frame.align(GGraphics.VCENTER | GGraphics.HCENTER);
                 form.setFocus(frame);
             });
-            GListItem itemDelete = moreMenu.addItems(null, BbStrings.getString("Remove"));
+            GListItem itemDelete = moreMenu.addItem(null, BbStrings.getString("Remove"));
             itemDelete.setActionListener((GObject gobj) -> {
                 form.remove(moreMenu);
 
@@ -601,7 +601,7 @@ public class BbChatUI implements ChatStateListener {
                 }
             });
 
-            GListItem itemAddMember = moreMenu.addItems(null, BbStrings.getString("Add Friend"));
+            GListItem itemAddMember = moreMenu.addItem(null, BbStrings.getString("Add Friend"));
             itemAddMember.setActionListener((GObject gobj) -> {
                 showAddMember();
             });
@@ -1059,7 +1059,7 @@ public class BbChatUI implements ChatStateListener {
 
 
         @Override
-        public void action(GObject gobj, String cmd) {
+        public void action(GObject gobj) {
             String name = gobj.getName();
 
             if ("BT_ADDFRIEND".equals(name)) {

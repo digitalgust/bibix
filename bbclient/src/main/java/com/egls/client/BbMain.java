@@ -122,7 +122,7 @@ public class BbMain extends GApplication {
         }
 
         @Override
-        public void action(GObject gobj, String cmd) {
+        public void action(GObject gobj) {
             String name = gobj.getName();
 
             if ("BT_LOGIN".equals(name)) {

@@ -6,6 +6,7 @@
 package com.egls.client.extgui;
 
 import com.egls.client.BbChatUI;
+import org.mini.glfw.Glfw;
 import org.mini.gui.GObject;
 import org.mini.gui.GViewPort;
 
@@ -145,11 +146,11 @@ public class GContentView extends GViewPort {
 
     @Override
     public boolean scrollEvent(float scrollX, float scrollY, float x, float y) {
-        return dragEvent(scrollX, scrollY, x, y);
+        return dragEvent(Glfw.GLFW_MOUSE_BUTTON_1, scrollX, scrollY, x, y);
     }
 
     @Override
-    public boolean dragEvent(float dx, float dy, float x, float y) {
+    public boolean dragEvent(int button, float dx, float dy, float x, float y) {
         float scrollY = getScrollY();
         if ((scrollY == 0 || (getH() - getInnerH() == 0)) && dy > 0) {
             chatUI.loadPrePage();
@@ -158,7 +159,7 @@ public class GContentView extends GViewPort {
         }
         reSize();
         flush();
-        return super.dragEvent(dx, dy, x, y);
+        return super.dragEvent(button, dx, dy, x, y);
     }
 
 }

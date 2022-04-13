@@ -6,7 +6,7 @@ import org.mini.gui.event.GActionListener;
 import org.mini.layout.XContainer;
 import org.mini.layout.XList;
 
-public class XSessionList extends XList implements GActionListener {
+public class XSessionList extends XList {
     static public final String XML_NAME = "com.egls.client.extgui.XSessionList";
 
 
@@ -24,7 +24,6 @@ public class XSessionList extends XList implements GActionListener {
     protected String getXmlTag() {
         return XML_NAME;
     }
-
 
 
     public GObject getGui() {
@@ -45,10 +44,5 @@ public class XSessionList extends XList implements GActionListener {
         }
     }
 
-
-    @Override
-    public void action(GObject gobj) {
-        getRoot().getEventHandler().action(gobj, null);
-    }
 
 }
