@@ -12,6 +12,7 @@ import com.egls.client.game.MainCanvas;
 import com.egls.client.netmgr.CmdPkg;
 import com.egls.client.netmgr.HeroPkgProtocol;
 import com.egls.client.netmgr.NetConn;
+import com.egls.client.netmgr.ZipCompressor;
 import com.egls.client.util.NetCmdHandler;
 import com.egls.core.net.impl.Client;
 import org.mini.crypt.AsynCrypt;
@@ -73,8 +74,11 @@ public class BbClient implements Runnable, NetCmdHandler {
         if (conn != null) {
             conn.close();
             conn = null;
+            ZipCompressor.getInstance().shutdown();
         }
         exit = true;
+        this.notify();
+
     }
 
     public boolean isOnline() {

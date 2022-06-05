@@ -1096,7 +1096,8 @@ public class BbChatUI implements ChatStateListener {
             } else if ("BT_LOGOUT".equals(name)) {
                 bbClient.logout();
             } else if ("BT_EXIT".equals(name)) {
-                AppManager.getInstance().active();
+                bbClient.close();
+                BbMain.getInstance().close();
             } else if ("BT_MORE".equals(name)) {
                 showMoreMenu();
             } else if ("MI_SESSION".equals(name)) {
@@ -1110,7 +1111,8 @@ public class BbChatUI implements ChatStateListener {
         }
 
 
-        public void onStateChange(GObject gobj, String cmd) {
+        @Override
+        public void onStateChange(GObject gobj) {
             String name = gobj.getName();
             if ("INPUT_SEARCH".equals(name)) {
                 String str = search.getText();

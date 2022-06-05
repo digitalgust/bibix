@@ -54,23 +54,23 @@
                         <goals>            
                             <goal>run</goal>        
                         </goals>             
-                        <configuration>       
+                        <configuration>
                             <tasks>
                                 <mkdir dir="/Library/WebServer/Documents"/>
-                                <copy todir="/Library/WebServer/Documents" overwrite="true" >
+                                <copy todir="/Library/WebServer/Documents" overwrite="true">
                                     <fileset dir="${project.build.directory}" erroronmissingdir="false">
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>
                                 </copy>
                                 <!--  copy to binary lib dir -->
                                 <mkdir dir="../srv_res/webserver/htmls/down"/>
-                                <copy todir="../srv_res/webserver/htmls/down/" overwrite="true" >
+                                <copy todir="../srv_res/webserver/htmls/down/" overwrite="true">
                                     <fileset dir="${project.build.directory}" erroronmissingdir="false">
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>
                                 </copy>
                                 <mkdir dir="${basedir}/../../miniJVM/binary/centos_x64/apps/"/>
-                                <copy todir="${basedir}/../../miniJVM/binary/centos_x64/apps/" overwrite="true" >
+                                <copy todir="${basedir}/../../miniJVM/binary/centos_x64/apps/" overwrite="true">
                                     <fileset dir="${project.build.directory}" erroronmissingdir="false">
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>

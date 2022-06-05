@@ -5,6 +5,7 @@
 package com.egls.client.netmgr;
 
 import com.egls.core.util.Log;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -80,6 +81,7 @@ public class ZipCompressor extends Compressor implements Runnable {
     }
 
     // @Override
+
     /**
      * 线程体
      */
@@ -97,7 +99,7 @@ public class ZipCompressor extends Compressor implements Runnable {
 
                     if ((data.length > networkZipSize && data[CmdPkg.POS_ZIP] == FORCE_NORMAL) // 正常包，超过临界点时压缩
                             || data[CmdPkg.POS_ZIP] == FORCE_ZIP// 强制
-                            ) {
+                    ) {
                         s = System.currentTimeMillis();
                         byte[] cdata = null;
                         {
@@ -130,8 +132,6 @@ public class ZipCompressor extends Compressor implements Runnable {
     }
 
     /**
-     *
-     * @param pkg
      * @param nhandler
      */
     @Override
@@ -173,7 +173,6 @@ public class ZipCompressor extends Compressor implements Runnable {
     }
 
     /**
-     *
      * @param src
      * @param from
      * @param to
