@@ -83,7 +83,7 @@ public class BbChatUI implements ChatStateListener {
 
     static final String REQUEST_LIST_NAME = "LIST_REQUEST";
 
-    XmlExtAssist assist = new XmlExtAssist();
+    XmlExtAssist assist;
 
     /**
      * @param pform
@@ -94,6 +94,7 @@ public class BbChatUI implements ChatStateListener {
         form = pform;
         bbClient = pclient;
 
+        assist = new XmlExtAssist(form);
         assist.registerGUI("com.egls.client.extgui.XSessionList");
         assist.registerGUI("com.egls.client.extgui.XContentView");
     }
@@ -117,13 +118,13 @@ public class BbChatUI implements ChatStateListener {
             return chatRoot;
         }
 
-        GForm.hideKeyboard();
+        GForm.hideKeyboard(form);
 
         GContentItem.defaultItemW = form.getDeviceWidth() * .80f;
 
 
         String xmlStr = GToolkit.readFileFromJarAsString("/res/ui/ChatRoot.xml", "utf-8");
-        XContainer xc = (XContainer) XContainer.parseXml(xmlStr);
+        XContainer xc = (XContainer) XContainer.parseXml(xmlStr, new XmlExtAssist(form));
         eventHandler = new ChatEventHandler();
         xc.build((int) form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH), eventHandler);
 
@@ -248,7 +249,7 @@ public class BbChatUI implements ChatStateListener {
             uit.setVar(key, BbStrings.getString(key));
         }
 
-        XContainer xc = (XContainer) XContainer.parseXml(uit.parse());
+        XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), new XmlExtAssist(form));
         xc.build((int) form.getDeviceWidth(), form.getDeviceHeight(), eventHandler);
         menu = (GMenu) ((GContainer) xc.getGui()).findByName("MENU_MAIN");
         //System.out.println("menu:" + menu);
@@ -292,7 +293,7 @@ public class BbChatUI implements ChatStateListener {
             }
 
 
-            XContainer xc = (XContainer) XContainer.parseXml(uit.parse());
+            XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), new XmlExtAssist(form));
             xc.build((int) chatRoot.getW(), (int) (chatRoot.getH()), eventHandler);
             gameView = (GViewPort) xc.getGui();
             bbClient.initGui(gameView);
@@ -311,7 +312,7 @@ public class BbChatUI implements ChatStateListener {
             }
 
 
-            XContainer xc = (XContainer) XContainer.parseXml(uit.parse());
+            XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), new XmlExtAssist(form));
             xc.build((int) chatRoot.getW(), (int) (chatRoot.getH()), eventHandler);
             myView = (GViewPort) xc.getGui();
 
@@ -346,7 +347,7 @@ public class BbChatUI implements ChatStateListener {
 
     void showAddNewFrame() {
 
-        GFrame frame = GToolkit.getInputFrame(BbStrings.getString("Add Friend"),
+        GFrame frame = GToolkit.getInputFrame(form, BbStrings.getString("Add Friend"),
                 BbStrings.getString("Input the bbid:"),
                 null,
                 "Input BBID",
@@ -381,7 +382,7 @@ public class BbChatUI implements ChatStateListener {
     public void onGroupAdd(ChatGroupInfo sd, long lastMsgAt) {
         GSessionItem gsi = sessionList.findSessionItem(0, sd.groupid);
         if (gsi == null) {
-            gsi = new GSessionItem(sd, this);
+            gsi = new GSessionItem(form, sd, this);
             gsi.groupInfo = sd;
             sessionList.add(0, gsi);
             addSessionItemAction(gsi);
@@ -421,7 +422,7 @@ public class BbChatUI implements ChatStateListener {
     public void onFriendAdd(MemberInfo mi, long lastMsgAt) {
         GSessionItem gsi = (GSessionItem) sessionList.findSessionItem(mi.roleid, 0);
         if (gsi == null) {
-            gsi = new GSessionItem(mi, this);
+            gsi = new GSessionItem(form, mi, this);
             gsi.groupInfo = mi;
             sessionList.add(0, gsi);
             addSessionItemAction(gsi);
@@ -462,7 +463,7 @@ public class BbChatUI implements ChatStateListener {
     public void onReceiveMsg(MsgItem mi) {
         GSessionItem gsi = curSelectedItem;
         if (gsi != null && gsi.groupInfo.match(mi.sessionRoleId, mi.groupid)) {
-            GContentItem ci = new GContentItem(mi, form, this);
+            GContentItem ci = new GContentItem(form, mi, this);
             float left = pad;
             if (mi.fromid == bbClient.getRoleid()) {
                 left = contentView.getW() - ci.getW();
@@ -513,7 +514,7 @@ public class BbChatUI implements ChatStateListener {
     }
 
     void showConfirmAdd(GListItem gli) {
-        GFrame frame = GToolkit.getConfirmFrame(BbStrings.getString("Request list"),
+        GFrame frame = GToolkit.getConfirmFrame(form, BbStrings.getString("Request list"),
                 BbStrings.getString("bbid:") + gli.getAttachment(),
                 BbStrings.getString("Decline"),
                 //
@@ -536,7 +537,7 @@ public class BbChatUI implements ChatStateListener {
 
     void showMoreMenu() {
         if (moreMenu == null) {
-            moreMenu = new GList(form.getDeviceWidth() - 200 - pad, moreBtn.getY() + moreBtn.getH() + pad, 200, 160);
+            moreMenu = new GList(form, form.getDeviceWidth() - 200 - pad, moreBtn.getY() + moreBtn.getH() + pad, 200, 160);
             moreMenu.setShowMode(GList.MODE_MULTI_SHOW);
             moreMenu.setBgColor(GToolkit.getStyle().getFrameBackground());
             moreMenu.setFocusListener(new GFocusChangeListener() {
@@ -563,7 +564,7 @@ public class BbChatUI implements ChatStateListener {
                 if (gsi == null) {
                     return;
                 }
-                GFrame frame = GToolkit.getConfirmFrame(BbStrings.getString("Clear Message"),
+                GFrame frame = GToolkit.getConfirmFrame(form, BbStrings.getString("Clear Message"),
                         BbStrings.getString("Clear Message") + " : " + gsi.groupInfo.getId() + "," + gsi.getLabel() + " " + BbStrings.getString("Are you sure?"),
                         BbStrings.getString("Delete"),
                         //
@@ -612,7 +613,7 @@ public class BbChatUI implements ChatStateListener {
     }
 
     void showDeleteFriend(GSessionItem gsi) {
-        GFrame frame = GToolkit.getConfirmFrame(BbStrings.getString("Remove Friend"),
+        GFrame frame = GToolkit.getConfirmFrame(form, BbStrings.getString("Remove Friend"),
                 BbStrings.getString("Delete") + " : " + gsi.groupInfo.getId() + "," + gsi.getLabel() + " " + BbStrings.getString("Are you sure?"),
                 BbStrings.getString("Delete"),
                 //
@@ -665,7 +666,7 @@ public class BbChatUI implements ChatStateListener {
             imglist.add(null);
         }
 
-        GFrame addMember = GToolkit.getListFrame(BbStrings.getString("Add Member"),
+        GFrame addMember = GToolkit.getListFrame(form, BbStrings.getString("Add Member"),
                 strlist.toArray(new String[strlist.size()]),
                 imglist.toArray(new GImage[imglist.size()]),
                 //
@@ -731,7 +732,7 @@ public class BbChatUI implements ChatStateListener {
             imglist.add(null);
         }
 
-        GFrame removeMember = GToolkit.getListFrame(BbStrings.getString("Remove Member"),
+        GFrame removeMember = GToolkit.getListFrame(form, BbStrings.getString("Remove Member"),
                 strlist.toArray(new String[strlist.size()]),
                 imglist.toArray(new GImage[imglist.size()]),
                 //
@@ -790,7 +791,7 @@ public class BbChatUI implements ChatStateListener {
             imglist.add(img);
         }
 
-        GFrame selMemberFrame = GToolkit.getListFrame(BbStrings.getString("Forward"),
+        GFrame selMemberFrame = GToolkit.getListFrame(form, BbStrings.getString("Forward"),
                 strlist.toArray(new String[strlist.size()]),
                 imglist.toArray(new GImage[imglist.size()]),
                 //
@@ -849,7 +850,7 @@ public class BbChatUI implements ChatStateListener {
         float pad = 2, btnW = 80, btnH = 35;
         float y = pad;
 
-        GFrame frame = new GFrame(BbStrings.getString("Infomation"), 0, 0, form.getDeviceWidth() * .85f, form.getDeviceHeight() * .7f);
+        GFrame frame = new GFrame(form, BbStrings.getString("Infomation"), 0, 0, form.getDeviceWidth() * .85f, form.getDeviceHeight() * .7f);
 
         frame.setFront(true);
         frame.setFocusListener(new GFocusChangeListener() {
@@ -870,7 +871,7 @@ public class BbChatUI implements ChatStateListener {
         } else {
             img = getHead(sessionItem.groupInfo.getId());
         }
-        GImageItem imgItem = new GImageItem(img);
+        GImageItem imgItem = new GImageItem(form, img);
         imgItem.setSize(80, 80);
         imgItem.setLocation(pad, y);
         view.add(imgItem);
@@ -882,11 +883,11 @@ public class BbChatUI implements ChatStateListener {
         } else {
             name = getChat().getFriend(sessionItem.groupInfo.getId()).name;
         }
-        GTextField nameField = new GTextField(name, "Change Name", pad, y, view.getW() - pad * 3 - btnW, btnH);
+        GTextField nameField = new GTextField(form, name, "Change Name", pad, y, view.getW() - pad * 3 - btnW, btnH);
         //nameField.setName("NameField");
         view.add(nameField);
 
-        GButton btn = new GButton(BbStrings.getString("Change"), (view.getW() - btnW - pad), y, btnW, btnH);
+        GButton btn = new GButton(form, BbStrings.getString("Change"), (view.getW() - btnW - pad), y, btnW, btnH);
         view.add(btn);
         btn.setActionListener((GObject gobj) -> {
             String n = nameField.getText();
@@ -1083,7 +1084,7 @@ public class BbChatUI implements ChatStateListener {
                 GForm.addMessage(BbStrings.getString("Submited change"));
             } else if ("BT_QRCODE".equals(name)) {
                 if (getMyBbidQr() == null) {
-                    GFrame gf = GToolkit.getConfirmFrame(BbStrings.getString("Notify"), BbStrings.getString("Qr Code is generating"), null, null, null, null);
+                    GFrame gf = GToolkit.getConfirmFrame(form, BbStrings.getString("Notify"), BbStrings.getString("Qr Code is generating"), null, null, null, null);
                     form.add(gf);
                     gf.align(GGraphics.HCENTER | GGraphics.VCENTER);
                 } else {
@@ -1097,7 +1098,7 @@ public class BbChatUI implements ChatStateListener {
                 bbClient.logout();
             } else if ("BT_EXIT".equals(name)) {
                 bbClient.close();
-                BbMain.getInstance().close();
+                BbMain.getInstance().closeApp();
             } else if ("BT_MORE".equals(name)) {
                 showMoreMenu();
             } else if ("MI_SESSION".equals(name)) {
@@ -1124,7 +1125,7 @@ public class BbChatUI implements ChatStateListener {
 
 
         private void actionMultiMedia() {
-            GList mediaMenu = GToolkit.getListMenu(new String[]{
+            GList mediaMenu = GToolkit.getListMenu(form, new String[]{
                             BbStrings.getString("Send Photo"),
                             BbStrings.getString("Camera"),
                             BbStrings.getString("Voice"),//

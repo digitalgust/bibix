@@ -1,5 +1,6 @@
 package com.egls.client.extgui;
 
+import org.mini.gui.GForm;
 import org.mini.gui.GObject;
 import org.mini.gui.event.GActionListener;
 import org.mini.layout.XContainer;
@@ -31,7 +32,7 @@ public class XContentView extends XViewPort {
 
     protected void createGui() {
         if (contentView == null) {
-            contentView = new GContentView();
+            contentView = new GContentView(getAssist().getForm());
             contentView.setAttachment(this);
             contentView.setName(name);
             contentView.setLocation(x, y);

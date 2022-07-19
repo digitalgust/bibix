@@ -4,6 +4,7 @@ import com.egls.client.BbClient;
 import com.egls.client.util.Util;
 import org.mini.glfm.Glfm;
 import org.mini.gui.GCanvas;
+import org.mini.gui.GForm;
 import org.mini.gui.GGraphics;
 
 import java.awt.*;
@@ -41,8 +42,8 @@ public final class MainCanvas
     /**
      * 构造方法
      */
-    public MainCanvas(BbClient bb, int x, int y, int w, int h) {
-        super(x, y, w, h);
+    public MainCanvas(GForm form, BbClient bb, int x, int y, int w, int h) {
+        super(form, x, y, w, h);
         bbClient = bb;
     }
 
@@ -101,7 +102,7 @@ public final class MainCanvas
             }
             //end debug
 
-            flush();
+            GForm.flush();
         } catch (Exception e) {
         } finally {
         }

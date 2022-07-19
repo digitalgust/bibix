@@ -7,6 +7,7 @@ package com.egls.client.extgui;
 
 import com.egls.client.BbChatUI;
 import org.mini.glfw.Glfw;
+import org.mini.gui.GForm;
 import org.mini.gui.GObject;
 import org.mini.gui.GViewPort;
 
@@ -19,11 +20,12 @@ public class GContentView extends GViewPort {
     public static final float PAD = 10;
     BbChatUI chatUI;
 
-    public GContentView() {
-
+    public GContentView(GForm form) {
+        this(form, null);
     }
 
-    public GContentView(BbChatUI app) {
+    public GContentView(GForm form, BbChatUI app) {
+        super(form);
         this.chatUI = app;
     }
 
@@ -158,7 +160,7 @@ public class GContentView extends GViewPort {
             chatUI.loadNextPage();
         }
         reSize();
-        flush();
+        GForm.flush();
         return super.dragEvent(button, dx, dy, x, y);
     }
 

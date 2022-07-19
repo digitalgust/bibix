@@ -12,7 +12,7 @@ import org.mini.glfm.Glfm;
 import org.mini.glwrap.GLUtil;
 import org.mini.gui.*;
 import org.mini.gui.event.GActionListener;
-import org.mini.media.AudioMgr;
+import org.mini.media.audio.AudioManager;
 import org.mini.nanovg.Nanovg;
 
 import static org.mini.gui.GToolkit.nvgRGBA;
@@ -51,7 +51,8 @@ public class GContentItem extends GObject {
     float contW, contH;
     GForm form;
 
-    public GContentItem(MsgItem mi, GForm form, BbChatUI app) {
+    public GContentItem(GForm form, MsgItem mi, BbChatUI app) {
+        super(form);
         this.msg = mi;
         this.form = form;
         this.app = app;
@@ -69,7 +70,7 @@ public class GContentItem extends GObject {
                 contH = defaultVideoH;
                 break;
             case MsgItem.TYPE_VOICE:
-                voiceTimeSec = (int) AudioMgr.getZipDataTime(msg.thumb);
+                voiceTimeSec = (int) AudioManager.getZipDataTime(msg.thumb);
                 contW = defaultVoiceW + voiceTimeSec * 3;
                 if (contW > defaultItemW) {
                     contW = defaultItemW;
@@ -115,7 +116,7 @@ public class GContentItem extends GObject {
     public void longTouchedEvent(int x, int y) {
         super.longTouchedEvent(x, y);
         touched = false;
-        GList menu = GToolkit.getListMenu(
+        GList menu = GToolkit.getListMenu(form,
                 new String[]{
                         BbStrings.getString("Copy"),
                         BbStrings.getString("Forward") + "...",

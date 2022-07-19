@@ -32,7 +32,7 @@ public class XSessionList extends XList {
 
     protected void createGui() {
         if (sessionList == null) {
-            sessionList = new GSessionList(x, y, width, height);
+            sessionList = new GSessionList(getAssist().getForm(), x, y, width, height);
             sessionList.setAttachment(this);
             sessionList.setName(name);
             sessionList.setShowMode(multiLine ? GList.MODE_MULTI_SHOW : GList.MODE_SINGLE_SHOW);

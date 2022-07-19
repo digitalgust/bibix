@@ -7,11 +7,11 @@ package com.egls.client.extgui;
 
 import com.egls.client.BbChatUI;
 import com.egls.client.chat.bean.SessionInfo;
+import org.mini.gui.GForm;
 import org.mini.gui.GListItem;
 import org.mini.gui.GToolkit;
 
 /**
- *
  * @author Gust
  */
 public class GSessionItem extends GListItem {
@@ -22,8 +22,8 @@ public class GSessionItem extends GListItem {
 
     final static float NOTIFY_R = 12.f;
 
-    public GSessionItem(SessionInfo gi, BbChatUI app) {
-        super(null, gi.toString());
+    public GSessionItem(GForm form, SessionInfo gi, BbChatUI app) {
+        super(form, null, gi.toString());
         this.app = app;
         groupInfo = gi;
     }

@@ -6,23 +6,25 @@
 package com.egls.client.audio;
 
 import com.egls.client.BbMain;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.mini.gui.GToolkit;
-import org.mini.media.AudioDecoder;
-import org.mini.media.AudioDevice;
-import org.mini.media.AudioMgr;
+import org.mini.media.MaDecoder;
+import org.mini.media.MaDevice;
+import org.mini.media.MiniAudio;
+import org.mini.media.audio.AudioManager;
 
 /**
- *
  * @author Gust
  */
 public class AudioLoader {
 
-    static int format = AudioDevice.mal_format_s16;
+    static int format = MiniAudio.mal_format_s16;
     static int channels = 2;
     static int ratio = 22050;
 
@@ -37,7 +39,7 @@ public class AudioLoader {
     public static final Integer MUSIC = 3;
 
     static Map<Integer, byte[]> audios = new HashMap();
-    static AudioDevice playDevice;
+    static MaDevice playDevice;
 
 
     public static byte[] readFile(String s) {
@@ -66,11 +68,11 @@ public class AudioLoader {
     }
 
     public static void play(Integer code) {
-        
+
         try {
             byte[] b = audios.get(code);
-            AudioDecoder decoder = new AudioDecoder(b, format, channels, ratio);
-            AudioMgr.playDecoder(decoder);
+            MaDecoder decoder = new MaDecoder(b, format, channels, ratio);
+            AudioManager.playDecoder(decoder);
         } catch (Exception e) {
         }
     }

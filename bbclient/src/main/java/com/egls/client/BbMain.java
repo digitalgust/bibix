@@ -13,6 +13,7 @@ import org.mini.gui.event.GSizeChangeListener;
 import org.mini.layout.UITemplate;
 import org.mini.layout.XContainer;
 import org.mini.layout.XEventHandler;
+import org.mini.layout.XmlExtAssist;
 
 import java.util.TimerTask;
 
@@ -38,7 +39,7 @@ public class BbMain extends GApplication {
             return form;
         }
         app = this;
-        form = new GForm();
+        form = new GForm(null);
         devW = form.getDeviceWidth();
         devH = form.getDeviceHeight();
         showLoginFrame();
@@ -84,7 +85,7 @@ public class BbMain extends GApplication {
         uit.setVar("LOAD_PASSWORD", password);
 
 
-        XContainer xc = (XContainer) XContainer.parseXml(uit.parse());
+        XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), new XmlExtAssist(form));
         LoginEventHandler eventHandler = new LoginEventHandler();
         xc.build(devW, (devH), eventHandler);
 
@@ -102,8 +103,7 @@ public class BbMain extends GApplication {
         });
         eventHandler.setContainer(frame);
 
-        form.add(frame);
-        frame.align(GGraphics.VCENTER | GGraphics.HCENTER);
+        GToolkit.showFrame(frame);
     }
 
     class LoginEventHandler extends XEventHandler {
@@ -132,7 +132,7 @@ public class BbMain extends GApplication {
                 uilogin(passport, password1, GLanguage.getCurLang());
             } else if ("BT_EXIT".equals(name)) {
                 app = null;
-                close();
+                closeApp();
             } else if ("CHECK_REMBER".equals(name)) {
 
             } else if ("LI_ENG".equals(name)) {

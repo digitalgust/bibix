@@ -5,6 +5,7 @@
  */
 package com.egls.client.extgui;
 
+import org.mini.gui.GForm;
 import org.mini.gui.GList;
 import org.mini.gui.GListItem;
 import org.mini.gui.GObject;
@@ -12,13 +13,12 @@ import org.mini.gui.GObject;
 import java.util.List;
 
 /**
- *
  * @author GustXList
  */
 public class GSessionList extends GList {
 
-    public GSessionList(float left, float top, float width, float height) {
-        super(left, top, width, height);
+    public GSessionList(GForm form, float left, float top, float width, float height) {
+        super(form, left, top, width, height);
     }
 
     public GSessionItem findSessionItem(long friendid, long sessionid) {

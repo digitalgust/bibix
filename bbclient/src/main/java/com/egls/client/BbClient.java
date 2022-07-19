@@ -61,7 +61,7 @@ public class BbClient implements Runnable, NetCmdHandler {
     public BbClient() {
 
 
-        mCanvas = new MainCanvas(this, 0, 0, 1, 1);
+        mCanvas = new MainCanvas(BbMain.getInstance().getForm(), this, 0, 0, 1, 1);
         gameRun = new GameRun(this);
 
         //

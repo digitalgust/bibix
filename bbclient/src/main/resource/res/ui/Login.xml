@@ -6,7 +6,7 @@
         <input name="INPUT_EMAIL" w="100%" h="30" hint="Email">{LOAD_USERNAME}</input>
         <input name="INPUT_PWD" w="100%" h="30" hint="Password" password="1">{LOAD_PASSWORD}</input>
         <checkbox name="CHECK_REMBER" w="100%" h="30" selected="1">{Remember me}</checkbox>
-        <list name="LIST_LANG" w="100%" h="40">
+        <list name="LIST_LANG" w="100%" h="40" multiline="0">
             <li name="LI_ENG">{English}</li>
             <li name="LI_CHS">{简体中文}</li>
             <li name="LI_CHT">{繁體中文}</li>

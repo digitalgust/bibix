@@ -81,6 +81,12 @@
                                         <include name="${project.artifactId}.jar"/>
                                     </fileset>
                                 </copy>
+                                <mkdir dir="/Library/WebServer/Documents"/>
+                                <copy todir="/Library/WebServer/Documents" overwrite="true" >
+                                    <fileset dir="${project.build.directory}" erroronmissingdir="false">
+                                        <include name="${project.artifactId}.jar"/>
+                                    </fileset>
+                                </copy>
                             </tasks>        
                         </configuration>        
                     </execution>    

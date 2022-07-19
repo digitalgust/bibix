@@ -9,14 +9,13 @@ import com.egls.client.BbStrings;
 import org.mini.gui.*;
 import org.mini.gui.event.GActionListener;
 import org.mini.gui.event.GFocusChangeListener;
-import org.mini.media.AudioCallback;
-import org.mini.media.AudioDecoder;
-import org.mini.media.AudioMgr;
+import org.mini.media.MaDecoder;
+import org.mini.media.audio.AudioListener;
+import org.mini.media.audio.AudioManager;
 import org.mini.nanovg.Nanovg;
 import org.mini.zip.Zip;
 
 /**
- *
  * @author Gust
  */
 public class GAudioRecoder extends GFrame {
@@ -27,11 +26,11 @@ public class GAudioRecoder extends GFrame {
 
     boolean playOnly = false;
     byte[] data;
-    AudioDecoder decoder;
+    MaDecoder decoder;
     int audioTime = 0;
 
     public GAudioRecoder(GForm form, boolean playOnly) {
-        super("", 0, 0, 320, 200);
+        super(form, "", 0, 0, 320, 200);
         this.playOnly = playOnly;
         setFront(true);
         setTitle(BbStrings.getString("Audio Recodr"));
@@ -44,8 +43,8 @@ public class GAudioRecoder extends GFrame {
 
             @Override
             public void focusLost(GObject go) {
-                AudioMgr.captureStop();
-                AudioMgr.playStop();
+                AudioManager.captureStop();
+                AudioManager.playStop();
                 GAudioRecoder.this.close();
             }
         });
@@ -56,20 +55,20 @@ public class GAudioRecoder extends GFrame {
         float gap = 20;
         float imgw = 50;
         float imgh = imgw;
-        GImageItem imgItem = new GImageItem(img);
+        GImageItem imgItem = new GImageItem(form, img);
         imgItem.setSize(imgw, imgh);
         imgItem.setLocation(gap, y);
         imgItem.setDrawBorder(false);
         view.add(imgItem);
 
-        GScrollBar scrobar = new GScrollBar();
+        GScrollBar scrobar = new GScrollBar(form);
         scrobar.setLocation(pad + imgw + gap * 2, y);
         scrobar.setSize(view.getW() - imgw - gap * 3, imgh);
         scrobar.setName(SCROLLBAR_TIME_NAME);
         view.add(scrobar);
         y += imgh + pad;
 
-        GLabel lab = new GLabel() {
+        GLabel lab = new GLabel(form) {
             @Override
             public boolean paint(long vg) {
                 super.paint(vg);
@@ -83,15 +82,15 @@ public class GAudioRecoder extends GFrame {
         view.add(lab);
 
         if (!playOnly) {
-            GButton capRerecord = new GButton(BbStrings.getString("Record"), imgw + gap * 2, y, btnW, btnH) {
+            GButton capRerecord = new GButton(form, BbStrings.getString("Record"), imgw + gap * 2, y, btnW, btnH) {
                 @Override
                 public boolean paint(long vg) {
                     super.paint(vg);
                     if (scrobar.getPos() >= 1.f) {
-                        AudioMgr.captureStop();
-                        data = AudioMgr.getCaptureData();
+                        AudioManager.captureStop();
+                        data = AudioManager.getCaptureData();
                     }
-                    if (AudioMgr.isCapturing()) {
+                    if (AudioManager.isCapturing()) {
                         setText(BbStrings.getString("Stop"));
                     } else {
                         setText(BbStrings.getString("Record"));
@@ -102,7 +101,7 @@ public class GAudioRecoder extends GFrame {
             view.add(capRerecord);
 
             capRerecord.setActionListener((GObject gobj) -> {
-                if (AudioMgr.isCapturing()) {
+                if (AudioManager.isCapturing()) {
                     stopCapture();
                 } else {
                     startCapture(audioTime);
@@ -110,28 +109,28 @@ public class GAudioRecoder extends GFrame {
 
             });
         }
-        GButton capPlay = new GButton(BbStrings.getString("Playback"), view.getW() - gap - btnW, y, btnW, btnH);
+        GButton capPlay = new GButton(form, BbStrings.getString("Playback"), view.getW() - gap - btnW, y, btnW, btnH);
         view.add(capPlay);
         capPlay.setActionListener((GObject gobj) -> {
             startPlay();
         });
         y += btnH + pad * 5;
 
-        GButton btnLeft = new GButton(BbStrings.getString("Cancel"), gap, y, btnW, btnH);
+        GButton btnLeft = new GButton(form, BbStrings.getString("Cancel"), gap, y, btnW, btnH);
         btnLeft.setName(BTN_LEFT_NAME);
         view.add(btnLeft);
         btnLeft.setActionListener((GObject gobj) -> {
-            AudioMgr.captureStop();
-            AudioMgr.playStop();
+            AudioManager.captureStop();
+            AudioManager.playStop();
             GAudioRecoder.this.close();
         });
 
-        GButton btnRight = new GButton(BbStrings.getString("Ok"), view.getW() - gap - btnW, y, btnW, btnH);
+        GButton btnRight = new GButton(form, BbStrings.getString("Ok"), view.getW() - gap - btnW, y, btnW, btnH);
         btnRight.setName(BTN_RIGHT_NAME);
         view.add(btnRight);
         btnRight.setActionListener((GObject gobj) -> {
-            AudioMgr.captureStop();
-            AudioMgr.playStop();
+            AudioManager.captureStop();
+            AudioManager.playStop();
             GAudioRecoder.this.close();
         });
 
@@ -154,49 +153,49 @@ public class GAudioRecoder extends GFrame {
         this.data = Zip.extract0(data);
     }
 
-    public void setAudioDecoder(AudioDecoder decoder) {
+    public void setMaDecoder(MaDecoder decoder) {
         this.decoder = decoder;
     }
 
     public byte[] getCaptureData() {
-        return AudioMgr.getCaptureData();
+        return AudioManager.getCaptureData();
     }
 
     public byte[] getCaptureZipData() {
-        return AudioMgr.getCaptureZipData();
+        return AudioManager.getCaptureZipData();
     }
 
     public void startCapture(int maxSecond) {
         audioTime = maxSecond;
-        AudioMgr.setCallback(getCallback());
-        AudioMgr.captureStart();
+        AudioManager.setAudioListener(getCallback());
+        AudioManager.captureStart();
     }
 
     public void stopCapture() {
-        AudioMgr.captureStop();
+        AudioManager.captureStop();
     }
 
     public void startPlay() {
-        AudioMgr.setCallback(getCallback());
+        AudioManager.setAudioListener(getCallback());
         if (data != null) {
-            audioTime = (int) AudioMgr.getDataTime(data);
+            audioTime = (int) AudioManager.getDataTime(data);
             if (audioTime == 0) {
                 audioTime = 1;
             }
-            AudioMgr.playData(data);
+            AudioManager.playData(data);
         } else if (decoder != null) {
-            AudioMgr.playDecoder(decoder);
+            AudioManager.playDecoder(decoder);
         } else {
-            AudioMgr.playCapAudio();
+            AudioManager.playCapAudio();
         }
     }
 
     public void stopPlay() {
-        AudioMgr.playStop();
+        AudioManager.playStop();
     }
 
-    AudioCallback getCallback() {
-        return new AudioCallback() {
+    AudioListener getCallback() {
+        return new AudioListener() {
             @Override
             public void onCapture(int millSecond, byte[] data) {
                 float pos = (float) millSecond / 60000;
