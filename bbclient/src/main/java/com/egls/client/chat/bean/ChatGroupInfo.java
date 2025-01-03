@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ *
  * @author Gust
  */
 public class ChatGroupInfo extends SessionInfo {
@@ -42,7 +43,7 @@ public class ChatGroupInfo extends SessionInfo {
     }
 
     public boolean isMember(long roleid) {
-        return members.get(Long.valueOf(roleid)) != null;
+        return members.get(roleid) != null;
     }
 
     @Override

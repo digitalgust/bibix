@@ -6,6 +6,11 @@
 package com.egls.client.audio;
 
 import com.egls.client.BbMain;
+import org.mini.gui.GToolkit;
+import org.mini.media.MaDecoder;
+import org.mini.media.MaDevice;
+import org.mini.media.MiniAudio;
+import org.mini.media.audio.AudioManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,13 +18,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mini.gui.GToolkit;
-import org.mini.media.MaDecoder;
-import org.mini.media.MaDevice;
-import org.mini.media.MiniAudio;
-import org.mini.media.audio.AudioManager;
-
 /**
+ *
  * @author Gust
  */
 public class AudioLoader {
@@ -68,7 +68,7 @@ public class AudioLoader {
     }
 
     public static void play(Integer code) {
-
+        
         try {
             byte[] b = audios.get(code);
             MaDecoder decoder = new MaDecoder(b, format, channels, ratio);

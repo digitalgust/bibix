@@ -16,6 +16,7 @@ import org.mini.nanovg.Nanovg;
 import org.mini.zip.Zip;
 
 /**
+ *
  * @author Gust
  */
 public class GAudioRecoder extends GFrame {
@@ -30,10 +31,10 @@ public class GAudioRecoder extends GFrame {
     int audioTime = 0;
 
     public GAudioRecoder(GForm form, boolean playOnly) {
-        super(form, "", 0, 0, 320, 200);
+        super(form,"", 0, 0, 320, 200);
         this.playOnly = playOnly;
         setFront(true);
-        setTitle(BbStrings.getString("Audio Recodr"));
+        setTitle(BbStrings.getString("Audio_Record"));
         float pad = 5, btnW = 80, btnH = 35;
         float y = pad;
         setFocusListener(new GFocusChangeListener() {
@@ -55,7 +56,7 @@ public class GAudioRecoder extends GFrame {
         float gap = 20;
         float imgw = 50;
         float imgh = imgw;
-        GImageItem imgItem = new GImageItem(form, img);
+        GImageItem imgItem = new GImageItem(form,img);
         imgItem.setSize(imgw, imgh);
         imgItem.setLocation(gap, y);
         imgItem.setDrawBorder(false);
@@ -82,7 +83,7 @@ public class GAudioRecoder extends GFrame {
         view.add(lab);
 
         if (!playOnly) {
-            GButton capRerecord = new GButton(form, BbStrings.getString("Record"), imgw + gap * 2, y, btnW, btnH) {
+            GButton capRerecord = new GButton(form,BbStrings.getString("Record"), imgw + gap * 2, y, btnW, btnH) {
                 @Override
                 public boolean paint(long vg) {
                     super.paint(vg);
@@ -109,14 +110,14 @@ public class GAudioRecoder extends GFrame {
 
             });
         }
-        GButton capPlay = new GButton(form, BbStrings.getString("Playback"), view.getW() - gap - btnW, y, btnW, btnH);
+        GButton capPlay = new GButton(form,BbStrings.getString("Playback"), view.getW() - gap - btnW, y, btnW, btnH);
         view.add(capPlay);
         capPlay.setActionListener((GObject gobj) -> {
             startPlay();
         });
         y += btnH + pad * 5;
 
-        GButton btnLeft = new GButton(form, BbStrings.getString("Cancel"), gap, y, btnW, btnH);
+        GButton btnLeft = new GButton(form,BbStrings.getString("Cancel"), gap, y, btnW, btnH);
         btnLeft.setName(BTN_LEFT_NAME);
         view.add(btnLeft);
         btnLeft.setActionListener((GObject gobj) -> {
@@ -125,7 +126,7 @@ public class GAudioRecoder extends GFrame {
             GAudioRecoder.this.close();
         });
 
-        GButton btnRight = new GButton(form, BbStrings.getString("Ok"), view.getW() - gap - btnW, y, btnW, btnH);
+        GButton btnRight = new GButton(form,BbStrings.getString("Ok"), view.getW() - gap - btnW, y, btnW, btnH);
         btnRight.setName(BTN_RIGHT_NAME);
         view.add(btnRight);
         btnRight.setActionListener((GObject gobj) -> {
@@ -153,7 +154,7 @@ public class GAudioRecoder extends GFrame {
         this.data = Zip.extract0(data);
     }
 
-    public void setMaDecoder(MaDecoder decoder) {
+    public void setAudioDecoder(MaDecoder decoder) {
         this.decoder = decoder;
     }
 

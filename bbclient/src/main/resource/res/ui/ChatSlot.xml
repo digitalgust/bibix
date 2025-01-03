@@ -4,7 +4,7 @@
             <tr>
                 <td>
                     <label w="80%"></label>
-                    <button name="BT_ADDFRIEND" w="20%" h="30">{+ Add}</button>
+                    <button name="BT_ADDFRIEND" w="20%" h="30">{__Add}</button>
                     <input name="INPUT_SEARCH" w="100%" h="30" style="search" hint="Search"></input>
                 </td>
             </tr>

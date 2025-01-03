@@ -12,7 +12,6 @@ import com.egls.client.game.MainCanvas;
 import com.egls.client.netmgr.CmdPkg;
 import com.egls.client.netmgr.HeroPkgProtocol;
 import com.egls.client.netmgr.NetConn;
-import com.egls.client.netmgr.ZipCompressor;
 import com.egls.client.util.NetCmdHandler;
 import com.egls.core.net.impl.Client;
 import org.mini.crypt.AsynCrypt;
@@ -61,7 +60,7 @@ public class BbClient implements Runnable, NetCmdHandler {
     public BbClient() {
 
 
-        mCanvas = new MainCanvas(BbMain.getInstance().getForm(), this, 0, 0, 1, 1);
+        mCanvas = new MainCanvas(BbMain.getInstance().getForm(),this, 0, 0, 1, 1);
         gameRun = new GameRun(this);
 
         //
@@ -74,11 +73,8 @@ public class BbClient implements Runnable, NetCmdHandler {
         if (conn != null) {
             conn.close();
             conn = null;
-            ZipCompressor.getInstance().shutdown();
         }
         exit = true;
-        this.notify();
-
     }
 
     public boolean isOnline() {
@@ -121,7 +117,7 @@ public class BbClient implements Runnable, NetCmdHandler {
                         break;
                     case STATE_LOGING:
                         if (System.currentTimeMillis() - loginTimeAt > LOGIN_TIMEOUT) {
-                            loginMsg = BbStrings.getString("login timeout");
+                            loginMsg = BbStrings.getString("login_timeout");
                             setState(STATE_NONE);
                             BbMain.getInstance().showLoginFrame();
                         }

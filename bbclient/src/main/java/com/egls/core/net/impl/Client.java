@@ -3,8 +3,8 @@ package com.egls.core.net.impl;
 import com.egls.core.net.PkgProtocol;
 import com.egls.core.util.Log;
 
-import javax.cldc.io.Connector;
-import javax.cldc.io.SocketConnection;
+import javax.microedition.io.Connector;
+import javax.microedition.io.SocketConnection;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 

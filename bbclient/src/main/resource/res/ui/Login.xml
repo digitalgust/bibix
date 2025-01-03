@@ -5,14 +5,14 @@
         <br/>
         <input name="INPUT_EMAIL" w="100%" h="30" hint="Email">{LOAD_USERNAME}</input>
         <input name="INPUT_PWD" w="100%" h="30" hint="Password" password="1">{LOAD_PASSWORD}</input>
-        <checkbox name="CHECK_REMBER" w="100%" h="30" selected="1">{Remember me}</checkbox>
+        <checkbox name="CHECK_REMBER" w="100%" h="30" selected="1">{Remember_me}</checkbox>
         <list name="LIST_LANG" w="100%" h="40" multiline="0">
-            <li name="LI_ENG">{English}</li>
-            <li name="LI_CHS">{简体中文}</li>
-            <li name="LI_CHT">{繁體中文}</li>
+            <li name="LI_ENG">English</li>
+            <li name="LI_CHS">简体中文</li>
+            <li name="LI_CHT">繁體中文</li>
         </list>
         <button name="BT_EXIT" w="50%" h="40">{Exit}</button>
-        <button name="BT_LOGIN" w="50%" h="40" bgcolor="006080ff" emoji="E740">{Sign in/up}</button>
-        <label name="LAB_STATE" w="100%" h="30" color="ffffff40" align="left,vcenter">{Auto sign up if account not exists}</label>
+        <button name="BT_LOGIN" w="50%" h="40" bgcolor="006080ff" emoji="E740">{Sign_in_up}</button>
+        <label name="LAB_STATE" w="100%" h="30" color="ffffff40" align="left,vcenter">{Auto_sign_up_if_account_not_exists}</label>
     </panel>
 </frame>

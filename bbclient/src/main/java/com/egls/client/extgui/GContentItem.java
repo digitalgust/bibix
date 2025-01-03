@@ -87,7 +87,7 @@ public class GContentItem extends GObject {
                     nvgFontFace(vg, GToolkit.getFontWord());
 
                     nvgTextAlign(vg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
-                    text_arr = GLUtil.toUtf8(s);
+                    text_arr = GLUtil.toCstyleBytes(s);
 
                     bond = GToolkit.getTextBoundle(vg, s, contW);
                     if (bond[HEIGHT] < GToolkit.getStyle().getTextFontSize() * 2) {
@@ -129,18 +129,18 @@ public class GContentItem extends GObject {
                                 if (!msg.isMediaMsg()) {
                                     Glfm.glfmSetClipBoardContent(msg.msg);
                                 }
-                                form.setFocus(null);
+                                form.setCurrent(null);
                             }
                         }, new GActionListener() {
                     @Override
                     public void action(GObject gobj) {
                         app.showForwardFrame(GContentItem.this);
-                        form.setFocus(null);
+                        form.setCurrent(null);
                     }
                 }, new GActionListener() {
                     @Override
                     public void action(GObject gobj) {
-                        form.setFocus(null);
+                        form.setCurrent(null);
                     }
                 },});
         float mx = x;
@@ -182,7 +182,7 @@ public class GContentItem extends GObject {
                                         GViewPort go = GToolkit.getImageView(getForm(), img, null);
                                         go.setLocation(0 - form.getInnerX(), go.getY());
                                         form.add(go);
-                                        form.setFocus(go);
+                                        form.setCurrent(go);
                                         //System.out.println("picture shown");
                                     }
                                     break;
@@ -191,7 +191,7 @@ public class GContentItem extends GObject {
                                     GAudioRecoder recoder = new GAudioRecoder(form, true);
                                     recoder.setAudioZipData(msg.thumb);
                                     form.add(recoder);
-                                    form.setFocus(recoder);
+                                    form.setCurrent(recoder);
                                     recoder.align(GGraphics.HCENTER | GGraphics.VCENTER);
                                     recoder.startPlay();
                                     break;

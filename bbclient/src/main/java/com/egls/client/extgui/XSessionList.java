@@ -1,5 +1,6 @@
 package com.egls.client.extgui;
 
+import org.mini.gui.GLabel;
 import org.mini.gui.GList;
 import org.mini.gui.GObject;
 import org.mini.gui.event.GActionListener;
@@ -25,14 +26,20 @@ public class XSessionList extends XList {
         return XML_NAME;
     }
 
+    @Override
+    protected <T extends GObject> T createGuiImpl() {
+        return (T) new GSessionList(getAssist().getForm(), x, y, width, height);
+    }
 
+    @Override
     public GObject getGui() {
         return sessionList;
     }
 
-    protected void createGui() {
+    @Override
+    protected void createAndSetGui() {
         if (sessionList == null) {
-            sessionList = new GSessionList(getAssist().getForm(), x, y, width, height);
+            sessionList = createGuiImpl();
             sessionList.setAttachment(this);
             sessionList.setName(name);
             sessionList.setShowMode(multiLine ? GList.MODE_MULTI_SHOW : GList.MODE_SINGLE_SHOW);

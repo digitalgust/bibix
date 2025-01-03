@@ -25,14 +25,18 @@ public class XContentView extends XViewPort {
         return XML_NAME;
     }
 
-
+    @Override
+    protected <T extends GObject> T createGuiImpl() {
+        return (T) new GContentView(getAssist().getForm());
+    }
     public GObject getGui() {
         return contentView;
     }
 
-    protected void createGui() {
+    @Override
+    protected void createAndSetGui() {
         if (contentView == null) {
-            contentView = new GContentView(getAssist().getForm());
+            contentView = createGuiImpl();
             contentView.setAttachment(this);
             contentView.setName(name);
             contentView.setLocation(x, y);

@@ -14,6 +14,7 @@ import org.mini.layout.UITemplate;
 import org.mini.layout.XContainer;
 import org.mini.layout.XEventHandler;
 import org.mini.layout.XmlExtAssist;
+import sun.misc.GC;
 
 import java.util.TimerTask;
 
@@ -31,6 +32,7 @@ public class BbMain extends GApplication {
     BbClient client;
     BbChatUI chatUI;
     int devW, devH;
+    XmlExtAssist assist;
 
 
     @Override
@@ -39,7 +41,9 @@ public class BbMain extends GApplication {
             return form;
         }
         app = this;
+        BbStrings.loadString(this);
         form = new GForm(null);
+        assist = new XmlExtAssist(form);
         devW = form.getDeviceWidth();
         devH = form.getDeviceHeight();
         showLoginFrame();
@@ -85,7 +89,7 @@ public class BbMain extends GApplication {
         uit.setVar("LOAD_PASSWORD", password);
 
 
-        XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), new XmlExtAssist(form));
+        XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), assist);
         LoginEventHandler eventHandler = new LoginEventHandler();
         xc.build(devW, (devH), eventHandler);
 
@@ -103,7 +107,8 @@ public class BbMain extends GApplication {
         });
         eventHandler.setContainer(frame);
 
-        GToolkit.showFrame(frame);
+        form.add(frame);
+        frame.align(GGraphics.VCENTER | GGraphics.HCENTER);
     }
 
     class LoginEventHandler extends XEventHandler {
@@ -160,42 +165,42 @@ public class BbMain extends GApplication {
 
 
         int note = 0;
+        final GCmd cmd = new GCmd(new Runnable() {
+            @Override
+            public void run() {
+
+                int state = client.getState();
+                if (state == BbClient.STATE_LOGING) {
+                    switch (note % 3) {
+                        case 0:
+                            lb_state.setText(".");
+                            break;
+                        case 1:
+                            lb_state.setText("..");
+                            break;
+                        case 2:
+                            lb_state.setText("...");
+                            break;
+                    }
+                    note++;
+                    GForm.addCmd(cmd);
+                } else if (state == BbClient.STATE_GAMERUN) {
+                    //System.out.println("login success");
+                } else if (state == BbClient.STATE_NONE) {
+                    String msg = client.getLoginMessage();
+                    lb_state.setText(msg);
+                    System.out.println("login fail");
+                }
+                GForm.flush();
+            }
+        });
 
         public void uilogin(String passport, String password, int lang) {
             BbClient.save(passport, password, lang);
             client = new BbClient();
             client.setState(BbClient.STATE_LOGIN);
             //
-            form.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    int state = client.getState();
-                    if (state == BbClient.STATE_LOGING) {
-                        switch (note % 3) {
-                            case 0:
-                                lb_state.setText(".");
-                                break;
-                            case 1:
-                                lb_state.setText("..");
-                                break;
-                            case 2:
-                                lb_state.setText("...");
-                                break;
-                        }
-                        note++;
-                    } else if (state == BbClient.STATE_GAMERUN) {
-                        this.cancel();
-                        //System.out.println("login success");
-                    } else if (state == BbClient.STATE_NONE) {
-                        String msg = client.getLoginMessage();
-                        lb_state.setText(msg);
-                        System.out.println("login fail");
-                        this.cancel();
-                    }
-
-                    GForm.flush();
-                }
-            }, 0, 500);
+            GForm.addCmd(cmd);
 
         }
     }

@@ -21,7 +21,7 @@ public class GContentView extends GViewPort {
     BbChatUI chatUI;
 
     public GContentView(GForm form) {
-        this(form, null);
+        super(form);
     }
 
     public GContentView(GForm form, BbChatUI app) {
@@ -93,7 +93,7 @@ public class GContentView extends GViewPort {
             add(in);
         }
 
-        reSize();
+        reAlign();
         setScrollY((in.getLocationTop() + in.getH()) / getInnerH());
     }
     //
@@ -159,7 +159,7 @@ public class GContentView extends GViewPort {
         } else if ((scrollY == 1 || (getH() - getInnerH() == 0)) && dy < 0) {
             chatUI.loadNextPage();
         }
-        reSize();
+        reAlign();
         GForm.flush();
         return super.dragEvent(button, dx, dy, x, y);
     }
