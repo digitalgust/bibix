@@ -14,6 +14,7 @@ import com.egls.client.netmgr.CmdPkg;
 import org.mini.apploader.AppManager;
 import org.mini.glfm.Glfm;
 import org.mini.gui.*;
+import org.mini.gui.callback.GCallBack;
 import org.mini.gui.event.GActionListener;
 import org.mini.gui.event.GFocusChangeListener;
 import org.mini.gui.event.GKeyboardShowListener;
@@ -121,13 +122,13 @@ public class BbChatUI implements ChatStateListener {
 
         GForm.hideKeyboard(form);
 
-        GContentItem.defaultItemW = form.getDeviceWidth() * .80f;
+        GContentItem.defaultItemW = GCallBack.getInstance().getDeviceWidth() * .80f;
 
 
         String xmlStr = GToolkit.readFileFromJarAsString("/res/ui/ChatRoot.xml", "utf-8");
         XContainer xc = (XContainer) XContainer.parseXml(xmlStr, assist);
         eventHandler = new ChatEventHandler();
-        xc.build((int) form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH), eventHandler);
+        xc.build((int) GCallBack.getInstance().getDeviceWidth(), (int) (GCallBack.getInstance().getDeviceHeight() - menuH), eventHandler);
 
         chatRoot = (GPanel) xc.getGui();
         form.setSizeChangeListener(new GSizeChangeListener() {
@@ -135,8 +136,8 @@ public class BbChatUI implements ChatStateListener {
             public void onSizeChange(int width, int height) {
                 xc.reSize(width, height);
                 menuContainer.reSize(width, height);
-                menu.setLocation(0, form.getDeviceHeight() - menuH);
-                GContentItem.defaultItemW = form.getDeviceWidth() * .80f;
+                menu.setLocation(0, GCallBack.getInstance().getDeviceHeight() - menuH);
+                GContentItem.defaultItemW = GCallBack.getInstance().getDeviceWidth() * .80f;
             }
         });
 
@@ -147,20 +148,20 @@ public class BbChatUI implements ChatStateListener {
         setCurrent(getChatSlots());
 
         menu.setFixed(true);
-        menu.setLocation(0, form.getDeviceHeight() - menuH);
+        menu.setLocation(0, GCallBack.getInstance().getDeviceHeight() - menuH);
         form.add(menu);
 
         form.setKeyshowListener(new GKeyboardShowListener() {
             @Override
             public void keyboardShow(boolean show, float x, float y, float w, float h) {
-                //form.onSizeChange(form.getDeviceWidth(), (int) (form.getDeviceHeight() - h));
+                //form.onSizeChange(GCallBack.getInstance().getDeviceWidth(), (int) (GCallBack.getInstance().getDeviceHeight() - h));
                 GPanel contentPanel = (GPanel) chatSlots.findByName("PAN_CONTENT");
                 if (contentPanel != null) {
                     XContainer xc = (XContainer) contentPanel.getLayout();
                     if (show) {
-                        xc.reSize(form.getDeviceWidth(), (int) (form.getDeviceHeight() - h));
+                        xc.reSize(GCallBack.getInstance().getDeviceWidth(), (int) (GCallBack.getInstance().getDeviceHeight() - h));
                     } else {
-                        xc.reSize(form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH));
+                        xc.reSize(GCallBack.getInstance().getDeviceWidth(), (int) (GCallBack.getInstance().getDeviceHeight() - menuH));
                     }
                     GForm.flush();
                 }
@@ -239,7 +240,7 @@ public class BbChatUI implements ChatStateListener {
         chatRoot.remove(gameView);
         chatRoot.remove(myView);
         chatRoot.add(cur);
-        chatRoot.getLayout().reSize((int) form.getDeviceWidth(), (int) (form.getDeviceHeight() - menuH));
+        chatRoot.getLayout().reSize((int) GCallBack.getInstance().getDeviceWidth(), (int) (GCallBack.getInstance().getDeviceHeight() - menuH));
     }
 
     void createMainMenu() {
@@ -251,7 +252,7 @@ public class BbChatUI implements ChatStateListener {
         }
 
         XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), assist);
-        xc.build((int) form.getDeviceWidth(), form.getDeviceHeight(), eventHandler);
+        xc.build((int) GCallBack.getInstance().getDeviceWidth(), GCallBack.getInstance().getDeviceHeight(), eventHandler);
         menu = (GMenu) ((GContainer) xc.getGui()).findByName("MENU_MAIN");
         //System.out.println("menu:" + menu);
         menuContainer = xc;
@@ -369,7 +370,7 @@ public class BbChatUI implements ChatStateListener {
                 },
                 BbStrings.getString("Camera_Scan"),
                 (GObject gobj) -> {
-                    Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_QR, 0);
+                    Glfm.glfmPickPhotoCamera(GCallBack.getInstance().getDisplay(), PICK_QR, 0);
                     gobj.getFrame().close();
                 }
         );
@@ -538,7 +539,7 @@ public class BbChatUI implements ChatStateListener {
 
     void showMoreMenu() {
         if (moreMenu == null) {
-            moreMenu = new GList(form, form.getDeviceWidth() - 200 - pad, moreBtn.getY() + moreBtn.getH() + pad, 200, 160);
+            moreMenu = new GList(form, GCallBack.getInstance().getDeviceWidth() - 200 - pad, moreBtn.getY() + moreBtn.getH() + pad, 200, 160);
             moreMenu.setShowMode(GList.MODE_MULTI_SHOW);
             moreMenu.setBgColor(GToolkit.getStyle().getFrameBackground());
             moreMenu.setFocusListener(new GFocusChangeListener() {
@@ -851,7 +852,7 @@ public class BbChatUI implements ChatStateListener {
         float pad = 2, btnW = 80, btnH = 35;
         float y = pad;
 
-        GFrame frame = new GFrame(form, BbStrings.getString("Infomation"), 0, 0, form.getDeviceWidth() * .85f, form.getDeviceHeight() * .7f);
+        GFrame frame = new GFrame(form, BbStrings.getString("Infomation"), 0, 0, GCallBack.getInstance().getDeviceWidth() * .85f, GCallBack.getInstance().getDeviceHeight() * .7f);
 
         frame.setFront(true);
         frame.setFocusListener(new GFocusChangeListener() {
@@ -1078,7 +1079,7 @@ public class BbChatUI implements ChatStateListener {
             } else if ("BT_BACKTOSESSION".equals(name)) {
                 chatPanelShowLeft();
             } else if ("IMG_MYHEAD".equals(name)) {
-                Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_HEAD, Glfm.GLFMPickupTypeImage);
+                Glfm.glfmPickPhotoAlbum(GCallBack.getInstance().getDisplay(), PICK_HEAD, Glfm.GLFMPickupTypeImage);
             } else if ("BT_CHANGENICK".equals(name)) {
                 String n = nameField.getText();
                 getChat().sendFriendUpdate(bbClient.getRoleid(), n);
@@ -1136,14 +1137,14 @@ public class BbChatUI implements ChatStateListener {
                             new GActionListener() {
                                 @Override
                                 public void action(GObject gobj) {
-                                    Glfm.glfmPickPhotoAlbum(form.getWinContext(), PICK_PHOTO, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
+                                    Glfm.glfmPickPhotoAlbum(GCallBack.getInstance().getDisplay(), PICK_PHOTO, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
                                     form.setCurrent(null);
                                 }
                             },//camera
                             new GActionListener() {
                                 @Override
                                 public void action(GObject gobj) {
-                                    Glfm.glfmPickPhotoCamera(form.getWinContext(), PICK_CAMERA, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
+                                    Glfm.glfmPickPhotoCamera(GCallBack.getInstance().getDisplay(), PICK_CAMERA, Glfm.GLFMPickupTypeImage | Glfm.GLFMPickupTypeVideo);
                                     form.setCurrent(null);
                                 }
                             },//voice

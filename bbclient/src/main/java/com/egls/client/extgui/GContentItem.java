@@ -11,6 +11,7 @@ import com.egls.client.chat.MsgItem;
 import org.mini.glfm.Glfm;
 import org.mini.glwrap.GLUtil;
 import org.mini.gui.*;
+import org.mini.gui.callback.GCallBack;
 import org.mini.gui.event.GActionListener;
 import org.mini.media.audio.AudioManager;
 import org.mini.nanovg.Nanovg;
@@ -56,7 +57,7 @@ public class GContentItem extends GObject {
         this.msg = mi;
         this.form = form;
         this.app = app;
-        init(form.getNvContext());
+        init(GCallBack.getInstance().getDisplay());
     }
 
     final void init(long vg) {
@@ -145,11 +146,11 @@ public class GContentItem extends GObject {
                 },});
         float mx = x;
         float my = y;
-        if (mx + menu.getW() > form.getDeviceWidth()) {
-            mx = form.getDeviceWidth() - menu.getW();
+        if (mx + menu.getW() > GCallBack.getInstance().getDeviceWidth()) {
+            mx = GCallBack.getInstance().getDeviceWidth() - menu.getW();
         }
-        if (my + menu.getH() > form.getDeviceHeight()) {
-            my = form.getDeviceHeight() - menu.getH();
+        if (my + menu.getH() > GCallBack.getInstance().getDeviceHeight()) {
+            my = GCallBack.getInstance().getDeviceHeight() - menu.getH();
         }
         menu.setLocation(mx, my);
         form.add(menu);
@@ -198,7 +199,7 @@ public class GContentItem extends GObject {
                                 }
                                 case MsgItem.TYPE_VIDEO: {
                                     String path = app.getMsgDatabase().getMediaFilePath(msg.getMediaId());
-                                    long handle = Glfm.glfmPlayVideo(form.getWinContext(), path, "video/mp4");
+                                    long handle = Glfm.glfmPlayVideo(GCallBack.getInstance().getDisplay(), path, "video/mp4");
                                     break;
                                 }
                             }

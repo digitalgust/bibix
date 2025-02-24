@@ -9,6 +9,8 @@ import com.egls.client.audio.AudioLoader;
 import org.mini.apploader.AppManager;
 import org.mini.apploader.GApplication;
 import org.mini.gui.*;
+import org.mini.gui.callback.GCallBack;
+import org.mini.gui.callback.GCmd;
 import org.mini.gui.event.GSizeChangeListener;
 import org.mini.layout.UITemplate;
 import org.mini.layout.XContainer;
@@ -44,8 +46,8 @@ public class BbMain extends GApplication {
         BbStrings.loadString(this);
         form = new GForm(null);
         assist = new XmlExtAssist(form);
-        devW = form.getDeviceWidth();
-        devH = form.getDeviceHeight();
+        devW = GCallBack.getInstance().getDeviceWidth();
+        devH = GCallBack.getInstance().getDeviceHeight();
         showLoginFrame();
         return form;
     }
@@ -107,8 +109,7 @@ public class BbMain extends GApplication {
         });
         eventHandler.setContainer(frame);
 
-        form.add(frame);
-        frame.align(GGraphics.VCENTER | GGraphics.HCENTER);
+        GToolkit.showFrame(frame);
     }
 
     class LoginEventHandler extends XEventHandler {
