@@ -84,13 +84,10 @@ public class GContentItem extends GObject {
                 if (s == null) {
                     contH = defaultIconW;
                 } else {
-                    nvgFontSize(vg, GToolkit.getStyle().getTextFontSize());
-                    nvgFontFace(vg, GToolkit.getFontWord());
-
                     nvgTextAlign(vg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
                     text_arr = GLUtil.toCstyleBytes(s);
 
-                    bond = GToolkit.getTextBoundle(vg, s, contW);
+                    bond = GToolkit.getTextBoundle(vg, s, contW, getFontSize(), true);
                     if (bond[HEIGHT] < GToolkit.getStyle().getTextFontSize() * 2) {
                         contW = bond[WIDTH] + 1;
                     }

@@ -16,7 +16,11 @@ import com.egls.client.util.NetCmdHandler;
 import com.egls.core.net.impl.Client;
 import org.mini.crypt.AsynCrypt;
 import org.mini.crypt.XorCrypt;
+import org.mini.gui.GToolkit;
 import org.mini.gui.GViewPort;
+import org.mini.gui.callback.GCallBack;
+import org.mini.gui.callback.GCmdHandler;
+import org.mini.gui.callback.GDesktop;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -60,7 +64,7 @@ public class BbClient implements Runnable, NetCmdHandler {
     public BbClient() {
 
 
-        mCanvas = new MainCanvas(BbMain.getInstance().getForm(),this, 0, 0, 1, 1);
+        mCanvas = new MainCanvas(BbMain.getInstance().getForm(), this, 0, 0, 1, 1);
         gameRun = new GameRun(this);
 
         //
@@ -235,6 +239,7 @@ public class BbClient implements Runnable, NetCmdHandler {
                     chat.sendClientActive(true);
                     setState(BbClient.STATE_GAMERUN);
                 } else if (state == STATE_LOGING) {
+                    GDesktop.addMessage("login_failed " + loginMsg);
                     setState(BbClient.STATE_NONE);
                     BbMain.getInstance().showLoginFrame();
                 } else if (state == STATE_RELOGING) {

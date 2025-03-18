@@ -33,8 +33,7 @@ public class GSessionList extends GList {
     }
 
     public void reSort() {
-        List<GObject> elements = getItemList();
-        elements.sort((GObject o1, GObject o2) -> {
+        sort((GObject o1, GObject o2) -> {
             GSessionItem gsi1 = (GSessionItem) o1;
             GSessionItem gsi2 = (GSessionItem) o2;
             //System.out.println(gsi1.getLabel() + " : " + gsi1.groupInfo.lastMsgAt + "      " + gsi2.getLabel() + " : " + gsi2.groupInfo.lastMsgAt);

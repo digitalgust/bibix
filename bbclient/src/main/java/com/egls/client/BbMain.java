@@ -6,24 +6,21 @@
 package com.egls.client;
 
 import com.egls.client.audio.AudioLoader;
-import org.mini.apploader.AppManager;
 import org.mini.apploader.GApplication;
 import org.mini.gui.*;
 import org.mini.gui.callback.GCallBack;
 import org.mini.gui.callback.GCmd;
 import org.mini.gui.event.GSizeChangeListener;
-import org.mini.layout.UITemplate;
 import org.mini.layout.XContainer;
 import org.mini.layout.XEventHandler;
-import org.mini.layout.XmlExtAssist;
-import sun.misc.GC;
-
-import java.util.TimerTask;
+import org.mini.layout.loader.UITemplate;
+import org.mini.layout.loader.XmlExtAssist;
+import org.mini.layout.loader.XuiAppHolder;
 
 /**
  * @author gust
  */
-public class BbMain extends GApplication {
+public class BbMain extends GApplication implements XuiAppHolder {
 
     static {
         AudioLoader.loadAll();
@@ -38,18 +35,15 @@ public class BbMain extends GApplication {
 
 
     @Override
-    public GForm getForm() {
-        if (form != null) {
-            return form;
-        }
+    public void onInit() {
+
         app = this;
         BbStrings.loadString(this);
-        form = new GForm(null);
-        assist = new XmlExtAssist(form);
+        form = new GForm(this);
+        assist = new XmlExtAssist(this);
         devW = GCallBack.getInstance().getDeviceWidth();
         devH = GCallBack.getInstance().getDeviceHeight();
         showLoginFrame();
-        return form;
     }
 
     void showLoginFrame() {
@@ -110,6 +104,16 @@ public class BbMain extends GApplication {
         eventHandler.setContainer(frame);
 
         GToolkit.showFrame(frame);
+    }
+
+    @Override
+    public GApplication getApp() {
+        return this;
+    }
+
+    @Override
+    public GContainer getWebView() {
+        return null;
     }
 
     class LoginEventHandler extends XEventHandler {

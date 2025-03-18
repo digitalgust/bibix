@@ -13,13 +13,13 @@ public class Const {
     static final public String RES_IMG_PATH = "/res/img/";
     static final public String SAVE_MSG_PATH = "/files/";
 
-//    public static String serverIp = "10.0.1.9";
+    public static String serverIp = "p.ysbit.cn";
 //    public static String serverIp = "10.0.1.11";
 //    public static String serverIp = "192.168.31.164";
 //    public static String serverIp = "127.0.0.1";
 //    public static String serverIp = "192.168.0.253";
 //    public static String serverIp = "42.62.97.181";
-    public static String serverIp = "127.0.0.1";
+//    public static String serverIp = "127.0.0.1";
     public static int port = 40081;
 
     // *****************************************

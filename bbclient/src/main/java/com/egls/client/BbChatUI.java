@@ -19,10 +19,10 @@ import org.mini.gui.event.GActionListener;
 import org.mini.gui.event.GFocusChangeListener;
 import org.mini.gui.event.GKeyboardShowListener;
 import org.mini.gui.event.GSizeChangeListener;
-import org.mini.layout.UITemplate;
+import org.mini.layout.loader.UITemplate;
 import org.mini.layout.XContainer;
 import org.mini.layout.XEventHandler;
-import org.mini.layout.XmlExtAssist;
+import org.mini.layout.loader.XmlExtAssist;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -95,7 +95,7 @@ public class BbChatUI implements ChatStateListener {
         form = pform;
         bbClient = pclient;
 
-        assist = new XmlExtAssist(form);
+        assist = new XmlExtAssist(BbMain.app);
 
         assist.registerGUI("com.egls.client.extgui.XSessionList");
         assist.registerGUI("com.egls.client.extgui.XContentView");

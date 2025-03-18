@@ -3,6 +3,7 @@ package com.egls.client.game;
 import com.egls.client.BbClient;
 import com.egls.client.util.Util;
 import org.mini.glfm.Glfm;
+import org.mini.glfw.Glfw;
 import org.mini.gui.GCanvas;
 import org.mini.gui.GForm;
 import org.mini.gui.GGraphics;
@@ -184,4 +185,9 @@ public final class MainCanvas
         super.touchEvent(touchid, phase, x, y);
     }
 
+    @Override
+    public void mouseButtonEvent(int button, boolean pressed, int x, int y) {
+        super.mouseButtonEvent(button, pressed, x, y);
+        touchEvent(Glfw.GLFW_MOUSE_BUTTON_1, pressed ? Glfm.GLFMTouchPhaseBegan : Glfm.GLFMTouchPhaseEnded, x, y);
+    }
 }
