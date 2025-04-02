@@ -231,13 +231,16 @@ public class BbClient implements Runnable, NetCmdHandler {
                 publicKey = new BigInteger(pkey);
 
                 if (b) {
-                    sendXorKey();
-                    chat = new Chat(this);
-                    BbMain.getInstance().showChatUI();
-                    chat.setChatStateListener(BbMain.getInstance().getChatUI());
-                    chat.initFriendList();
-                    chat.sendClientActive(true);
-                    setState(BbClient.STATE_GAMERUN);
+                    GDesktop.addCmd(() -> {
+                        sendXorKey();
+                        chat = new Chat(this);
+                        BbMain.getInstance().showChatUI();
+                        chat.setChatStateListener(BbMain.getInstance().getChatUI());
+                        chat.initFriendList();
+                        chat.sendClientActive(true);
+                        setState(BbClient.STATE_GAMERUN);
+
+                    });
                 } else if (state == STATE_LOGING) {
                     GDesktop.addMessage("login_failed " + loginMsg);
                     setState(BbClient.STATE_NONE);

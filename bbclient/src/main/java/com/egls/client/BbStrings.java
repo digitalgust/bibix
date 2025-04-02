@@ -73,7 +73,7 @@ public class BbStrings {
         app.regString("Not_available", new String[]{"Not available", "不可用", "不可用"});
         app.regString("More", new String[]{"More", "更多", "更多"});
         app.regString("Forward", new String[]{"Forward", "转发", "轉發"});
-        app.regString("Exit_to_AppManager", new String[]{"Exit to AppManager", "退到应用管理器", "退到應用管理器"});
+        app.regString("Exit_to_AppManager", new String[]{"Back to Home", "退到主页", "退到主页"});
     }
 
     public static String getString(String key) {
